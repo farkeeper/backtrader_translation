@@ -6,12 +6,7 @@
 # 时间：2022/10/3 - 20:33
 # 作者：farserver@163.com
 # ====================================================
-import collections
 
-
-# collections.Counter
-# 统计出现的次数。  split()分割字符串
-# print(collections.Counter("hello hello world hello nihao".split()))
 def findbases(kls, topclass):
     """ 查找kls的所有父类 到topclass为止 """
     retval = list()
