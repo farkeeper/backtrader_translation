@@ -7,11 +7,17 @@
 # 作者：farserver@163.com
 # ====================================================
 
+"""
+未解决
+"""
 
 class Meta(type):
-    """ 这是一个元类 """
-
+    """ 元类 必须显式继承 type"""
     def __new__(cls, name, bases, attr):
+        """开辟内存空间
+        必须有返回值，自动赋给 __init__ 的self
+        __init__参数必须与new一致"""
+        # print("这是啥", type(Meta).__new__(cls, name, bases, attr))
         return type(Meta).__new__(cls, name, bases, attr)
 
     def __init__(self, name, bases, attr):
@@ -27,12 +33,12 @@ class Meta(type):
 
     def add_strategy(cls, strategy):
         cls.strategy = strategy
+        print("策略添加成功", cls.strategy)
 
     def run(cls):
-        cls.strategy()
+        cls.strategy.__init__(cls)
 
     def __call__(self):
-        # return self.name
         return self
 
 
@@ -43,9 +49,9 @@ class Cerebro(metaclass=Meta):
 
 class Strategy(metaclass=Meta):
     def __init__(self):
-        # print(self.data)
-        self.data = 0
-        pass
+        print('Strategy初始化成功')
+        print("strategy能使用data了")
+        print(self.data)
 
 
 if __name__ == "__main__":
@@ -57,7 +63,5 @@ if __name__ == "__main__":
     print("添加数据", b.data)
 
     b.add_strategy(Strategy)
-    b.strategy()
 
     b.run()
-    print(b.data)

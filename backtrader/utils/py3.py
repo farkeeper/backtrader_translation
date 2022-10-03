@@ -26,7 +26,6 @@ import sys
 
 PY2 = sys.version_info.major == 2
 
-
 if PY2:
     try:
         import _winreg as winreg
@@ -58,17 +57,30 @@ if PY2:
     from urllib2 import urlopen, ProxyHandler, build_opener, install_opener
     from urllib import quote as urlquote
 
-    def iterkeys(d): return d.iterkeys()
 
-    def itervalues(d): return d.itervalues()
+    def iterkeys(d):
+        return d.iterkeys()
 
-    def iteritems(d): return d.iteritems()
 
-    def keys(d): return d.keys()
+    def itervalues(d):
+        return d.itervalues()
 
-    def values(d): return d.values()
 
-    def items(d): return d.items()
+    def iteritems(d):
+        return d.iteritems()
+
+
+    def keys(d):
+        return d.keys()
+
+
+    def values(d):
+        return d.values()
+
+
+    def items(d):
+        return d.items()
+
 
     import Queue as queue
 
@@ -93,11 +105,18 @@ else:
     zip = zip
     long = int
 
-    def cmp(a, b): return (a > b) - (a < b)
 
-    def bytes(x): return x.encode('utf-8')
+    def cmp(a, b):
+        return (a > b) - (a < b)
 
-    def bstr(x): return str(x)
+
+    def bytes(x):
+        return x.encode('utf-8')
+
+
+    def bstr(x):
+        return str(x)
+
 
     from io import StringIO
 
@@ -105,29 +124,51 @@ else:
                                 install_opener)
     from urllib.parse import quote as urlquote
 
-    def iterkeys(d): return iter(d.keys())
 
-    def itervalues(d): return iter(d.values())
+    def iterkeys(d):
+        return iter(d.keys())
 
-    def iteritems(d): return iter(d.items())
 
-    def keys(d): return list(d.keys())
+    def itervalues(d):
+        return iter(d.values())
 
-    def values(d): return list(d.values())
 
-    def items(d): return list(d.items())
+    def iteritems(d):
+        return iter(d.items())
+
+
+    def keys(d):
+        return list(d.keys())
+
+
+    def values(d):
+        return list(d.values())
+
+
+    def items(d):
+        return list(d.items())
+
 
     import queue as queue
 
 
 # This is from Armin Ronacher from Flash simplified later by six
 def with_metaclass(meta, *bases):
-    """Create a base class with a metaclass."""
+    """Create a base class with a metaclass.
+    使用元类创建一个基类 ： 使用元类meta创建一个 临时 基类
+        创建一个基类，这个基类是临时的，这个基类是由元类meta创建的。
+    """
+
     # This requires a bit of explanation: the basic idea is to make a dummy
     # metaclass for one level of class instantiation that replaces itself with
     # the actual metaclass.
+    # 这可能需要一点解释：基本思想是创建一个伪元类，为同级别的的类实例，用实际的元类来替代他自己
     class metaclass(meta):
+        """metaclass类继承自meta类, meta是个元类，metaclass也是个元类"""
 
+        # 开辟内存空间
         def __new__(cls, name, this_bases, d):
             return meta(name, bases, d)
+
     return type.__new__(metaclass, str('temporary_class'), (), {})
+    # temporary_class 临时类

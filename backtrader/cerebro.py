@@ -35,51 +35,64 @@ from .timer import Timer
 # 在这里定义以期他可以被拾取，理想状态下他可以在Cerebro内部定义
 
 class OptReturn(object):
-    def __init__(self, params, **kwargs):
+    def __init__(self, params, **kwargs):   # 位置参数 关键字参数
         self.p = self.params = params
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        for k, v in kwargs.items():     # 遍历字典 关键字参数以字典类型传递
+            setattr(self, k, v)     # 设置属性值，属性可以是新增的
 
 
 class Cerebro(with_metaclass(MetaParams, object)):
     '''Params:
+    参数：
 
       - ``preload`` (default: ``True``)
-
+        预加载：默认为 是
         Whether to preload the different ``data feeds`` passed to cerebro for
         the Strategies
+        是否把传递给 cerebro的 ’数据饲料‘ 预加载 给 策略
 
       - ``runonce`` (default: ``True``)
+        矢量化运行：是
 
         Run ``Indicators`` in vectorized mode to speed up the entire system.
         Strategies and Observers will always be run on an event based basis
+        以矢量化模式运行’Indicators'指标库以加速整个系统。
+        策略和观察者将一直基于标准运行
 
       - ``live`` (default: ``False``)
-
+        实时模式：否
         If no data has reported itself as *live* (via the data's ``islive``
         method but the end user still want to run in ``live`` mode, this
         parameter can be set to true
+        如果没有数据报告为“live”（通过数据的“islive”方法）但最终用户仍希望在“实时”模式下运行，
+        这个参数可以设置为true
 
         This will simultaneously deactivate ``preload`` and ``runonce``. It
         will have no effect on memory saving schemes.
+        这将同时停止'preload'和‘runonce’。这对节省内存没有影响（效果？）
 
         Run ``Indicators`` in vectorized mode to speed up the entire system.
         Strategies and Observers will always be run on an event based basis
+        以矢量化模式运行’Indicators'指标库以加速整个系统。
+        策略和观察者将一直基于标准运行
 
       - ``maxcpus`` (default: None -> all available cores)
-
+        最大CPU核心数：默认，所有可用的内核
          How many cores to use simultaneously for optimization
+        多少内核并行 优化
 
       - ``stdstats`` (default: ``True``)
-
+        默认模式
         If True default Observers will be added: Broker (Cash and Value),
         Trades and BuySell
+        若为True，默认的观察者将被添加：经纪人、交易、买卖
 
       - ``oldbuysell`` (default: ``False``)
 
         If ``stdstats`` is ``True`` and observers are getting automatically
         added, this switch controls the main behavior of the ``BuySell``
         observer
+        如果``stdstats``为``True``，并且自动添加观察者，则此开关控制``BuySell``观察者的主要行为
 
         - ``False``: use the modern behavior in which the buy / sell signals
           are plotted below / above the low / high prices respectively to avoid
@@ -254,9 +267,9 @@ class Cerebro(with_metaclass(MetaParams, object)):
         Set to ``False`` for compatibility. May be changed to ``True``
 
     '''
-
+    # params是在哪里定义的
     params = (
-        ('preload', True),
+        ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),
         ('maxcpus', None),
         ('stdstats', True),

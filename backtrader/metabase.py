@@ -66,8 +66,19 @@ def findowner(owned, cls, startlevel=2, skip=None):
 
     return None
 
-
+"""
+__call__()函数 使 类名 可以像函数一样被调用，有返回值
+类名后面加(),就像个函数一样。
+可见类的返回值从__call__而来
+如:
+    class A:
+        def __call__():
+            pass
+            
+    就可以 A() 
+"""
 class MetaBase(type):
+    """ 元类 显式继承type """
     def doprenew(cls, *args, **kwargs):
         return cls, args, kwargs
 
@@ -208,7 +219,8 @@ class MetaParams(MetaBase):
     def __new__(meta, name, bases, dct):
         # Remove params from class definition to avoid inheritance
         # (and hence "repetition")
-        newparams = dct.pop('params', ())
+        # 从类的定义中删除params以避免被继承或者因此重复
+        newparams = dct.pop('params', ())   # 取出params，如果没有则返回空元组
 
         packs = 'packages'
         newpackages = tuple(dct.pop(packs, ()))  # remove before creation
@@ -287,6 +299,7 @@ class MetaParams(MetaBase):
         params = cls.params()
         for pname, pdef in cls.params._getitems():
             setattr(params, pname, kwargs.pop(pname, pdef))
+        # pop 取出，弹出。返回值为取出的值，原数据被删除。
 
         # Create the object and set the params in place
         _obj, args, kwargs = super(MetaParams, cls).donew(*args, **kwargs)

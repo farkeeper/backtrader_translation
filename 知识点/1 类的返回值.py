@@ -40,4 +40,16 @@ if __name__ == "__main__":
         pass
 
 
-    print(findbases(D, B))
+    # print(findbases(D, B))
+
+
+    class A(type):
+        def __call__(self):
+            """call会截断new和init？会先于new和init运行？"""
+            return 123
+
+    class B(metaclass=A):
+        pass
+
+    b = B()
+    print(b)
