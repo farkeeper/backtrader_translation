@@ -97,6 +97,7 @@ class MetaBase(type):
         return _obj, args, kwargs
 
     def __call__(cls, *args, **kwargs):
+        """call函数使 类 可调用，如 类名()"""
         cls, args, kwargs = cls.doprenew(*args, **kwargs)
         _obj, args, kwargs = cls.donew(*args, **kwargs)
         _obj, args, kwargs = cls.dopreinit(_obj, *args, **kwargs)
@@ -175,7 +176,7 @@ class AutoInfoClass(object):
     def _get(self, name, default=None):
         return getattr(self, name, default)
 
-    @classmethod
+    @classmethod    # 类方法，类不用实例化，就可以调用该方法，如 AutoInfoClass()._getkwargsdefault(cls)
     def _getkwargsdefault(cls):
         return cls._getpairs()
 
@@ -216,6 +217,7 @@ class AutoInfoClass(object):
 
 
 class MetaParams(MetaBase):
+    """继承自元类的类也是元类"""
     def __new__(meta, name, bases, dct):
         # Remove params from class definition to avoid inheritance
         # (and hence "repetition")
@@ -229,9 +231,12 @@ class MetaParams(MetaBase):
         fnewpackages = tuple(dct.pop(fpacks, ()))  # remove before creation
 
         # Create the new class - this pulls predefined "params"
+        # 创建新类 - 提取预定义的‘params’
         cls = super(MetaParams, meta).__new__(meta, name, bases, dct)
 
         # Pulls the param class out of it - default is the empty class
+        # 提取 param 类 - 默认是空类
+        # 从cls中获取params属性值，如果没有params属性则返回AutoInfoClass
         params = getattr(cls, 'params', AutoInfoClass)
 
         # Pulls the packages class out of it - default is the empty class
@@ -252,6 +257,7 @@ class MetaParams(MetaBase):
         cls.frompackages = fpackages + fnewpackages
 
         # Subclass and store the newly derived params class
+        # 子类 并 储存新派生的params类
         cls.params = params._derive(name, newparams, morebasesparams)
 
         return cls
