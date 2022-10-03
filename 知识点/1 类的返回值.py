@@ -17,9 +17,8 @@ def findbases(kls, topclass):
     retval = list()
     for base in kls.__bases__:
         if issubclass(base, topclass):      # 如果base是topclass的子类
-            retval.extend(findbases(base, topclass))        # 末尾追加
-            # retval.append(base)     # 末尾追加
-            retval.append(base)  # 末尾追加
+            retval.extend(findbases(base, topclass))        # 末尾追加 元素
+            retval.append(base)  # 末尾追加 整体
 
     return retval
 
@@ -45,7 +44,7 @@ if __name__ == "__main__":
 
     class A(type):
         def __call__(self):
-            """call会截断new和init？会先于new和init运行？"""
+            """call会截断new和init？会先于new和init运行？不会吧"""
             return 123
 
     class B(metaclass=A):
