@@ -28,3 +28,4 @@ __btversion__ = tuple(int(x) for x in __version__.split('.'))
 
 if __name__ == "__main__":
     print(__btversion__)
+    print("split():分割字符串", 'ab,cde,f'.split(','))

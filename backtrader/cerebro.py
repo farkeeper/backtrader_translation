@@ -2,20 +2,6 @@
 # -*- coding: utf-8; py-indent-offset:4 -*-
 ###############################################################################
 #
-# Copyright (C) 2015-2020 Daniel Rodriguez
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
 from __future__ import (absolute_import, division, print_function,
@@ -23,8 +9,10 @@ from __future__ import (absolute_import, division, print_function,
 
 import datetime
 import collections
+
 import itertools
-import multiprocessing
+import multiprocessing  # 多进程 https://zhuanlan.zhihu.com/p/136995403
+# ProcessPoolExecutor 和 ThreadPoolExecutor 更简单
 
 import backtrader as bt
 from .utils.py3 import (map, range, zip, with_metaclass, string_types,
@@ -42,8 +30,9 @@ from .tradingcal import (TradingCalendarBase, TradingCalendar,
                          PandasMarketCalendar)
 from .timer import Timer
 
-# Defined here to make it pickable. Ideally it could be defined inside Cerebro
 
+# Defined here to make it pickable. Ideally it could be defined inside Cerebro
+# 在这里定义以期他可以被拾取，理想状态下他可以在Cerebro内部定义
 
 class OptReturn(object):
     def __init__(self, params, **kwargs):
@@ -1014,7 +1003,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
         rv = vars(self).copy()
         if 'runstrats' in rv:
-            del(rv['runstrats'])
+            del (rv['runstrats'])
         return rv
 
     def runstop(self):
@@ -1581,7 +1570,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 for i, dti in enumerate(dts):
                     if dti is not None:
                         di = datas[i]
-                        rpi = False and di.replaying   # to check behavior
+                        rpi = False and di.replaying  # to check behavior
                         if dti > dt0:
                             if not rpi:  # must see all ticks ...
                                 di.rewind()  # cannot deliver yet
@@ -1709,3 +1698,6 @@ class Cerebro(with_metaclass(MetaParams, object)):
             if t.params.strats:
                 for strat in runstrats:
                     strat.notify_timer(t, t.lastwhen, *t.args, **t.kwargs)
+
+
+

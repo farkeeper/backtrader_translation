@@ -30,14 +30,18 @@ from .utils.py3 import zip, string_types, with_metaclass
 
 
 def findbases(kls, topclass):
+    """ 查找kls的所有父类 到topclass为止 """
     retval = list()
     for base in kls.__bases__:
-        if issubclass(base, topclass):
-            retval.extend(findbases(base, topclass))
-            retval.append(base)
+        if issubclass(base, topclass):      # 如果base是topclass的子类
+            retval.extend(findbases(base, topclass))        # 末尾追加 元素
+            retval.append(base)  # 末尾追加 整体
 
     return retval
-
+    # kls.__bases__ 返回所有基类
+    # 函数内部如果只 append,每次迭代都将会清空retval，无法获取所有父类
+    # 函数内定义变量 retval ，累加获取元素，此法可取。
+    # 迭代法可以吗？
 
 def findowner(owned, cls, startlevel=2, skip=None):
     # skip this frame and the caller's -> start at 2
@@ -329,3 +333,4 @@ class ItemCollection(object):
     def getbyname(self, name):
         idx = self._names.index(name)
         return self._items[idx]
+
