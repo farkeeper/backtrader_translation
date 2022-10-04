@@ -43,10 +43,13 @@ class YahooFinanceCSVData(feed.CSVDataBase):
     '''
     Parses pre-downloaded Yahoo CSV Data Feeds (or locally generated if they
     comply to the Yahoo format)
+    解析预加载的CSV数据（如果符合雅虎格式则本地生成）
 
     Specific parameters:
+    指定参数如下：
 
       - ``dataname``: The filename to parse or a file-like object
+      dataname：要解析的文件名 或者 诸如此类的对象
 
       - ``reverse`` (default: ``False``)
 
@@ -83,6 +86,7 @@ class YahooFinanceCSVData(feed.CSVDataBase):
         swap the columns again arose.
 
     '''
+    # 类变量 可通过 类名.类变量名 直接调用，类的实例也可直接拥有
     lines = ('adjclose',)
 
     params = (

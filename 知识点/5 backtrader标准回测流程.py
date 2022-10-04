@@ -33,6 +33,7 @@ if __name__ == "__main__":
                                         )
     print(data)
     # 打印出一个对象地址，可见不是简单的读取read_csv。他干了什么呢？
+    # dataname是在哪里定义的，给出文件路径是如何读取文件内容的？
 
     # # 加载数据
     # cerebro.adddata(data)
