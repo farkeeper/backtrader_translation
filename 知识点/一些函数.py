@@ -9,6 +9,12 @@
 import datetime
 
 if __name__ == "__main__":
+    # 当前时间
     now = datetime.datetime.now()
+    # 一天后的时间
     target = now + datetime.timedelta(days=1)
+    print(now, target)
+
+    # 3天前的时间
+    target = now - datetime.timedelta(days=3)
     print(now, target)

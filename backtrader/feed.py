@@ -667,20 +667,27 @@ class MetaCSVDataBase(DataBase.__class__):
 class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     '''
     Base class for classes implementing CSV DataFeeds
+    实现CSV DataFeed类的基类
 
     The class takes care of opening the file, reading the lines and
     tokenizing them.
+    该类负责打开文件，读取行数据，标识他们
 
     Subclasses do only need to override:
+    子类只需重写
 
       - _loadline(tokens)
 
     The return value of ``_loadline`` (True/False) will be the return value
     of ``_load`` which has been overriden by this base class
+    `_loadline`的返回值将被被重写的`_load`的返回值 通过该基类
     '''
+    # 类变量
+    # 是类本身自己拥有的变量，类实例化时，会拷贝一份给实例对象。可通过 类名.类变量 调用，也可以 实例对象.类变量 调用
+    # 所有不同的实例对象，都有一份类变量，但都是拷贝来的，不同的实例对象修改类变量并不会影响其他实例对象的类变量。
 
     f = None
-    params = (('headers', True), ('separator', ','),)
+    params = (('headers', True), ('separator', ','),)   # separator 分离器 分选机
 
     def start(self):
         super(CSVDataBase, self).start()

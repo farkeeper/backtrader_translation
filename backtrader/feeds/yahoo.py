@@ -33,7 +33,12 @@ import backtrader as bt
 from .. import feed
 from ..utils import date2num
 
-
+__all__ = ['YahooFinanceCSVData',   # yahoo财经CSV数据类 ，继承自 CSV数据基类 feed.CSVDataBase （在feed模块内定义）
+           'YahooLegacyCSV',
+           'YahooFinanceCSV',
+           'YahooFinanceData',
+           'YahooFinance',
+           ]
 class YahooFinanceCSVData(feed.CSVDataBase):
     '''
     Parses pre-downloaded Yahoo CSV Data Feeds (or locally generated if they
