@@ -78,7 +78,19 @@ __call__()函数 使 类名 可以像函数一样被调用，有返回值
     就可以 A() 
 """
 class MetaBase(type):
-    """ 元类 显式继承type """
+    """ 元类 显式继承type
+    由名字可知元类 MetaBase 是所有元类的基类
+    backtrader可能有很多元类，这些元类负责创建不同的类，但这些元类都继承自MetaBase
+    像：
+        MetaBase是玉帝，玉帝手下有很多神仙，这些都是元类，元类负责创建类。
+        神仙负责创建不同的类(型)，动物类、人类、植物类、建筑类；   狗类、鸡类、菊花类、学生类、商品房类
+        不同的类有好多好多的实体。 张三家的那只老母狗、李四、这棵野菊花、去年春天和美女一起开过房的那幢酒店
+    """
+
+    # 接下来的5个 类行为（函数） 都是给 call函数 准备的
+    # 类是由 该类（或者父类）设定的 元类 负责创建的：metaclass=元类名，会自动调用 元类的 __call__ 函数
+    # 类是由 元类的 __call__ 函数，控制创建过程 的
+
     def doprenew(cls, *args, **kwargs):
         return cls, args, kwargs
 
@@ -97,7 +109,8 @@ class MetaBase(type):
         return _obj, args, kwargs
 
     def __call__(cls, *args, **kwargs):
-        """call函数使 类 可调用，如 类名()"""
+        """call函数使 类 可调用，如 类名()
+        谁调用谁就是cls，谁(metaclass=MetaBase)， 谁就是cls"""
         cls, args, kwargs = cls.doprenew(*args, **kwargs)
         _obj, args, kwargs = cls.donew(*args, **kwargs)
         _obj, args, kwargs = cls.dopreinit(_obj, *args, **kwargs)
