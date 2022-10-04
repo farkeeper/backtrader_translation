@@ -11,11 +11,12 @@ def findbases(kls, topclass):
     """ 查找kls的所有父类 到topclass为止 """
     retval = list()
     for base in kls.__bases__:
-        if issubclass(base, topclass):      # 如果base是topclass的子类
-            retval.extend(findbases(base, topclass))        # 末尾追加 元素
+        if issubclass(base, topclass):  # 如果base是topclass的子类
+            retval.extend(findbases(base, topclass))  # 末尾追加 元素
             retval.append(base)  # 末尾追加 整体
 
     return retval
+
 
 if __name__ == "__main__":
     class A:
@@ -36,14 +37,15 @@ if __name__ == "__main__":
 
     # print(findbases(D, B))
 
-
     class A(type):
         def __call__(self):
-            """call会截断new和init？会先于new和init运行？不会吧"""
+            """call使类可调用，metaclass=A也相当于被调用"""
             return 123
+
 
     class B(metaclass=A):
         pass
+
 
     b = B()
     print(b)

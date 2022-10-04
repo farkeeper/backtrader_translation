@@ -310,7 +310,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
     )
 
     def __init__(self):
-        """初始化函数 类的实例化（实体，具体的对象）时会给对象赋初始值 """
+        """初始化函数 类的实例化（实体，具体的对象）时会给对象（实体）赋初始值 """
         self._dolive = False
         self._doreplay = False
         self._dooptimize = False

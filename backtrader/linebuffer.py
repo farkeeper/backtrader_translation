@@ -18,16 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-'''
+"""
 
 .. module:: linebuffer
+linebuffer模块
 
 Classes that hold the buffer for a *line* and can operate on it
 with appends, forwarding, rewinding, resetting and other
+为line和增删改查操作的 具备缓存功能的类
 
 .. moduleauthor:: Daniel Rodriguez
 
-'''
+"""
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
