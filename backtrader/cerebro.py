@@ -267,7 +267,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         Set to ``False`` for compatibility. May be changed to ``True``
 
     '''
-    # params是在哪里定义的
+    # params是在哪里定义的？metabase模块的 MetaParams(MetaBase)：参数类的元类
     params = (
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),
