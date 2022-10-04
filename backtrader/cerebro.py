@@ -110,6 +110,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         If ``stdstats`` is ``True`` and observers are getting automatically
         added, this switch controls the main behavior of the ``Trades``
         observer
+        如果’stdstats‘为’True'并且观察者自动获取添加的话，本开关控制‘Trades’观察者的主要行为
 
         - ``False``: use the modern behavior in which trades for all datas are
           plotted with different markers
@@ -294,8 +295,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
         ('oldtrades', False),
         ('lookahead', 0),
         ('exactbars', False),
-        ('optdatas', True),
-        ('optreturn', True),
+        ('optdatas', True),     # 优化数据
+        ('optreturn', True),    # 优化返回结果
         ('objcache', False),
         ('live', False),    # 实时模式：否
         ('writer', False),
@@ -308,31 +309,31 @@ class Cerebro(with_metaclass(MetaParams, object)):
     )
 
     def __init__(self):
-        """初始化函数 类的实例化（实体，具体的对象）时会调用 """
+        """初始化函数 类的实例化（实体，具体的对象）时会给对象赋初始值 """
         self._dolive = False
         self._doreplay = False
         self._dooptimize = False
         self.stores = list()
-        self.feeds = list()
-        self.datas = list()
+        self.feeds = list()     # 饲料？
+        self.datas = list()     # 数据
         self.datasbyname = collections.OrderedDict()
-        self.strats = list()
+        self.strats = list()    # 策略
         self.optcbs = list()  # holds a list of callbacks for opt strategies
-        self.observers = list()
-        self.analyzers = list()
-        self.indicators = list()
+        self.observers = list()     # 观察者
+        self.analyzers = list()     # 分析员
+        self.indicators = list()    # 指标
         self.sizers = dict()
         self.writers = list()
         self.storecbs = list()
         self.datacbs = list()
-        self.signals = list()
+        self.signals = list()       # 信号
         self._signal_strat = (None, None, None)
         self._signal_concurrent = False
         self._signal_accumulate = False
 
         self._dataid = itertools.count(1)
 
-        self._broker = BackBroker()
+        self._broker = BackBroker()     # 私有成员 经纪人
         self._broker.cerebro = self
 
         self._tradingcal = None  # TradingCalendar()
@@ -571,7 +572,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
     def addtz(self, tz):
         '''
         This can also be done with the parameter ``tz``
-
+        添加时区，本操作也可以在 param 里设置
         Adds a global timezone for strategies. The argument ``tz`` can be
 
           - ``None``: in this case the datetime displayed by strategies will be
@@ -657,6 +658,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
     def addsizer(self, sizercls, *args, **kwargs):
         '''Adds a ``Sizer`` class (and args) which is the default sizer for any
         strategy added to cerebro
+        添加到大脑的任何策略的默认 大小计算器
         '''
         self.sizers[None] = (sizercls, args, kwargs)
 
@@ -671,6 +673,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Adds an ``Indicator`` class to the mix. Instantiation will be done at
         ``run`` time in the passed strategies
+        添加指标类。实例化将在添加策略后执行run的时候进行
         '''
         self.indicators.append((indcls, args, kwargs))
 
@@ -956,12 +959,16 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Adds a ``Strategy`` class to the mix for a single pass run.
         Instantiation will happen during ``run`` time.
+        添加一个 策略类。
+        实例化将在 run执行时进行
 
         args and kwargs will be passed to the strategy as they are during
         instantiation.
+        在实例化期间，args和kwargs将被传递给策略
 
         Returns the index with which addition of other objects (like sizers)
         can be referenced
+        返回可以添加其他对象的索引
         '''
         self.strats.append([(strategy, args, kwargs)])
         return len(self.strats) - 1
@@ -970,6 +977,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Sets a specific ``broker`` instance for this strategy, replacing the
         one inherited from cerebro.
+        为该策略设置一个特定的‘broker’实例，替代从cerebor继承的那个
         '''
         self._broker = broker
         broker.cerebro = self
