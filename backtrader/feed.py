@@ -49,6 +49,10 @@ __all__ = ['MetaAbstractDataBase',  # 抽象数据基类的元类
 
 
 class MetaAbstractDataBase(dataseries.OHLCDateTime.__class__):
+    """抽象数据基类的元类
+    功能：
+    用途：
+    """
     _indcol = dict()
 
     def __init__(cls, name, bases, dct):

@@ -64,6 +64,7 @@ class DataSeries(LineSeries):
     _compression = 1
     _timeframe = TimeFrame.Days
 
+    # 分别赋值为0，1，2，3，4，5，6
     Close, Low, High, Open, Volume, OpenInterest, DateTime = range(7)
 
     LineOrder = [DateTime, Open, High, Low, Close, Volume, OpenInterest]
@@ -105,6 +106,7 @@ class DataSeries(LineSeries):
 
 
 class OHLC(DataSeries):
+    # 类变量
     lines = ('close', 'low', 'high', 'open', 'volume', 'openinterest',)
 
 

@@ -286,6 +286,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
     '''
     # params是在哪里定义的？metabase模块的 MetaParams(MetaBase)：参数类的元类
+    # 其实就是个类变量。长得难看点
     params = (
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),  # 矢量化运行 ： 是

@@ -9,6 +9,8 @@
 import datetime
 import os.path
 
+from backtrader import OHLC
+
 import backtrader as bt
 
 if __name__ == "__main__":
@@ -31,7 +33,7 @@ if __name__ == "__main__":
                                         fromdate=datetime.datetime(2005, 3, 24),
                                         todate=datetime.datetime(2005, 10, 23),
                                         )
-    print(data)
+    print(data, data.__dir__())
     # 打印出一个对象地址，可见不是简单的读取read_csv。他干了什么呢？
     # dataname是在哪里定义的，给出文件路径是如何读取文件内容的？
 
