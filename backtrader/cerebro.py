@@ -986,7 +986,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
     def getbroker(self):
         '''
         Returns the broker instance.
-
+        返回broker实例
         This is also available as a ``property`` by the name ``broker``
         '''
         return self._broker
@@ -998,6 +998,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
              **kwargs):
         '''
         Plots the strategies inside cerebro
+        绘制策略
 
         If ``plotter`` is None a default ``Plot`` instance is created and
         ``kwargs`` are passed to it during instantiation.
@@ -1061,6 +1062,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Used during optimization to pass the cerebro over the multiprocesing
         module without complains
+        用于：在无损情况下优化使用多处理模块
         '''
 
         predata = self.p.optdatas and self._dopreload and self._dorunonce
@@ -1070,6 +1072,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Used during optimization to prevent optimization result `runstrats`
         from being pickled to subprocesses
+        用于：在优化期间防止优化结果“runstrats”被子流程拾取
         '''
 
         rv = vars(self).copy()
@@ -1078,18 +1081,23 @@ class Cerebro(with_metaclass(MetaParams, object)):
         return rv
 
     def runstop(self):
-        '''If invoked from inside a strategy or anywhere else, including other
-        threads the execution will stop as soon as possible.'''
+        """If invoked from inside a strategy or anywhere else, including other
+        threads the execution will stop as soon as possible.
+        如果被调用，无论是策略内部还是其他任何地方，包括 所有执行的线程 将立即结束"""
         self._event_stop = True  # signal a stop has been requested
 
     def run(self, **kwargs):
         '''The core method to perform backtesting. Any ``kwargs`` passed to it
         will affect the value of the standard parameters ``Cerebro`` was
         instantiated with.
+        执行回测的核心方法：
+        所有传递进来的参数都会影响到Cerebro的实例的执行结果
 
         If ``cerebro`` has not datas the method will immediately bail out.
+        如果 cerebro无数据，本方法将立刻推出
 
         It has different return values:
+        不同的返回值：
 
           - For No Optimization: a list contanining instances of the Strategy
             classes added with ``addstrategy``
