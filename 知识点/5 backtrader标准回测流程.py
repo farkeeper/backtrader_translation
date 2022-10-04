@@ -6,6 +6,9 @@
 # 时间：2022/10/4 - 21:20
 # 作者：farserver@163.com
 # ====================================================
+import datetime
+import os.path
+
 import backtrader as bt
 
 if __name__ == "__main__":
@@ -18,14 +21,19 @@ if __name__ == "__main__":
     # 第二步：由元类MetaParams负责创建Cerebro类
     # 第三步：创建Cerebro类的一个实例cerebro
     # 在这过程中，backtrader都干了什么：
-
+    # 好像没干什么具体的事
     """
 
-    # # 加工数据饲料
-    # data = bt.feeds.YahooFinanceCSVData(dataname=,
-    #                                     fromdate=,
-    #                                     todate=,
-    #                                     )
+    modpath = os.path.dirname(__file__)
+    datapath = os.path.join(modpath, '../datas/yhoo-2003-2005.txt')
+    # 加工数据饲料
+    data = bt.feeds.YahooFinanceCSVData(dataname=datapath,
+                                        fromdate=datetime.datetime(2005, 3, 24),
+                                        todate=datetime.datetime(2005, 10, 23),
+                                        )
+    print(data)
+    # 打印出一个对象地址，可见不是简单的读取read_csv。他干了什么呢？
+
     # # 加载数据
     # cerebro.adddata(data)
     # # 加载策略
