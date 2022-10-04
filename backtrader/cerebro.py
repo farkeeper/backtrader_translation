@@ -1101,9 +1101,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
           - For No Optimization: a list contanining instances of the Strategy
             classes added with ``addstrategy``
+            无优化：包含通过addstrategy添加进来的策略类实例 的列表
 
           - For Optimization: a list of lists which contain instances of the
             Strategy classes added with ``addstrategy``
+            优化：一个 包含通过addstrategy添加进来的策略类实例 的列表 的列表
         '''
         self._event_stop = False  # Stop is requested
 
