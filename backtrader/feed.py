@@ -667,7 +667,7 @@ class MetaCSVDataBase(DataBase.__class__):
 class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     '''
     Base class for classes implementing CSV DataFeeds
-    实现CSV DataFeed类的基类
+    （实现）CSV 数据饲料 类 的基类
 
     The class takes care of opening the file, reading the lines and
     tokenizing them.
@@ -685,14 +685,16 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     # 类变量
     # 是类本身自己拥有的变量，类实例化时，会拷贝一份给实例对象。可通过 类名.类变量 调用，也可以 实例对象.类变量 调用
     # 所有不同的实例对象，都有一份类变量，但都是拷贝来的，不同的实例对象修改类变量并不会影响其他实例对象的类变量。
-
+    # params 应该是定义了一堆类变量
+    # 定义了类变量，所有子类都会拷贝一份
+    # 只要Cerebro的超类定义了类变量data，Strategy类也继承了同一超类，则Strategy的实例就拥有了类变量data,从而实现data共享
     f = None
-    params = (('headers', True), ('separator', ','),)   # separator 分离器 分选机
+    params = (('headers', True), ('separator', ','),)   # separator 分隔符
 
     def start(self):
-        super(CSVDataBase, self).start()
+        super(CSVDataBase, self).start()    # 调用超类的start()函数
 
-        if self.f is None:
+        if self.f is None:  # self.f is None 和 not self.f 不完全一样
             if hasattr(self.p.dataname, 'readline'):
                 self.f = self.p.dataname
             else:

@@ -234,7 +234,9 @@ class AutoInfoClass(object):
 
 
 class MetaParams(MetaBase):
-    """继承自元类的类也是元类"""
+    """
+    参数类的元类
+    继承自元类的类也是元类"""
     def __new__(meta, name, bases, dct):
         # Remove params from class definition to avoid inheritance
         # (and hence "repetition")
@@ -319,6 +321,7 @@ class MetaParams(MetaBase):
                     setattr(sys.modules[basecls.__module__], falias, pattr)
 
         # Create params and set the values from the kwargs
+        # 创建params，并通过 kwargs字典 给他赋值
         params = cls.params()
         for pname, pdef in cls.params._getitems():
             setattr(params, pname, kwargs.pop(pname, pdef))
