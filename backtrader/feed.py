@@ -665,7 +665,7 @@ class MetaCSVDataBase(DataBase.__class__):
 
 
 class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
-    '''
+    """
     Base class for classes implementing CSV DataFeeds
     （实现）CSV 数据饲料 类 的基类
 
@@ -682,7 +682,7 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     of ``_load`` which has been overriden by this base class
     `_loadline`的返回值将被被重写的`_load`的返回值 通过该基类
     `_load` 返回 通过该基类重写的`_loadline`的返回值
-    '''
+    """
     # 类变量
     # 是类本身自己拥有的变量，类实例化时，会拷贝一份给实例对象。可通过 类名.类变量 调用，也可以 实例对象.类变量 调用
     # 所有不同的实例对象，都有一份类变量，但都是拷贝来的，不同的实例对象修改类变量并不会影响其他实例对象的类变量。

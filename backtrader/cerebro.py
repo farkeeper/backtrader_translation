@@ -42,7 +42,9 @@ class OptReturn(object):
 
 
 class Cerebro(with_metaclass(MetaParams, object)):
-    '''Params:
+    '''
+    赛萝卜：backtrader的大脑，发动机
+    Params:
     参数：
 
       - ``preload`` (default: ``True``)
@@ -185,31 +187,39 @@ class Cerebro(with_metaclass(MetaParams, object)):
         basis with the strategy method ``set_tradehistory``
 
       - ``optdatas`` (default: ``True``)
-
+        优化数据：是
         If ``True`` and optimizing (and the system can ``preload`` and use
         ``runonce``, data preloading will be done only once in the main process
         to save time and resources.
+        若为‘True’ 将优化（系统将预加载且使用矢量化，预加载数据将只运行一次，目的是在主进程中节约时间和资源
 
         The tests show an approximate ``20%`` speed-up moving from a sample
         execution in ``83`` seconds to ``66``
+        测试表明：可以提高20%的性能
 
       - ``optreturn`` (default: ``True``)
-
+        优化返回
         If ``True`` the optimization results will not be full ``Strategy``
         objects (and all *datas*, *indicators*, *observers* ...) but and object
         with the following attributes (same as in ``Strategy``):
+        若为‘True’，
+        优化结果将不是完整的'Strategy‘对象（以及所有的数据 指标 观察者）
+        而是具备以下 与’Strategy‘相同属性的对象
 
-          - ``params`` (or ``p``) the strategy had for the execution
-          - ``analyzers`` the strategy has executed
+          - ``params`` (or ``p``) the strategy had for the execution    执行策略
+          - ``analyzers`` the strategy has executed 分析员
 
         In most occassions, only the *analyzers* and with which *params* are
         the things needed to evaluate a the performance of a strategy. If
         detailed analysis of the generated values for (for example)
         *indicators* is needed, turn this off
+        在多数情况下，只有 分析员 和 参数 是评估策略性能所必须的。
+        如果需要详细的分析结果（例如 指标），请关闭此项
 
         The tests show a ``13% - 15%`` improvement in execution time. Combined
         with ``optdatas`` the total gain increases to a total speed-up of
         ``32%`` in an optimization run.
+        测试表明，执行时间提升了 13%-15%。与 ’optdatas‘联合使用将有效提升32%的加速
 
       - ``oldsync`` (default: ``False``)
 
@@ -221,20 +231,26 @@ class Cerebro(with_metaclass(MetaParams, object)):
         set this parameter to true
 
       - ``tz`` (default: ``None``)
+      时区：默认使用 世界统一时间
 
         Adds a global timezone for strategies. The argument ``tz`` can be
+        为策略添加全球时区。‘tz’参数可取类型：
 
           - ``None``: in this case the datetime displayed by strategies will be
             in UTC, which has been always the standard behavior
+            ‘None’：策略显式的日期时间将是 世界统一时间 ，这是标配
 
           - ``pytz`` instance. It will be used as such to convert UTC times to
             the chosen timezone
+            ‘pytz’实例。他将世界标准时区转换为所选时区
 
           - ``string``. Instantiating a ``pytz`` instance will be attempted.
+            `string`：尝试实例化‘pytz’实例
 
           - ``integer``. Use, for the strategy, the same timezone as the
             corresponding ``data`` in the ``self.datas`` iterable (``0`` would
             use the timezone from ``data0``)
+            对于策略，使用与self.datas中的data相同的时区
 
       - ``cheat_on_open`` (default: ``False``)
 
@@ -255,6 +271,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         This will automatically invoke the ``set_coo`` method of the broker
         with ``True`` to activate ``cheat_on_open`` execution. Will only do it
         if ``cheat_on_open`` is also ``True``
+        自动调用‘set_coo’方法，为‘True’将激活‘cheat_on_open’执行。
 
       - ``quicknotify`` (default: ``False``)
 
@@ -272,7 +289,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),  # 矢量化运行 ： 是
         ('maxcpus', None),  # 最大核心数 ：默认 所有核心一块干
-        ('stdstats', True),     # 标准模式
+        ('stdstats', True),     # 标准模式：是
         ('oldbuysell', False),
         ('oldtrades', False),
         ('lookahead', 0),
@@ -280,11 +297,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
         ('optdatas', True),
         ('optreturn', True),
         ('objcache', False),
-        ('live', False),
+        ('live', False),    # 实时模式：否
         ('writer', False),
         ('tradehistory', False),
         ('oldsync', False),
-        ('tz', None),
+        ('tz', None),   # 时区 默认使用世界统一时间
         ('cheat_on_open', False),
         ('broker_coo', True),
         ('quicknotify', False),
