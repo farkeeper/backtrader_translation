@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # 给对象设置属性值，给对象增加属性并赋值
     setattr(a, 'name', 'JACK')
-    
+
     print("获取对象的属性值", getattr(a, 'name'))
     print("获取对象的属性值，如果没有则返回None", getattr(a, 'language', 'None'))
 
