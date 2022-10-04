@@ -110,13 +110,17 @@ class MetaBase(type):
 
     def __call__(cls, *args, **kwargs):
         """call函数使 类 可调用，如 类名()
-        谁调用谁就是cls，谁(metaclass=MetaBase)， 谁就是cls"""
+        谁调用谁就是cls，谁(metaclass=MetaBase)， 谁就是cls
+        """
         cls, args, kwargs = cls.doprenew(*args, **kwargs)
         _obj, args, kwargs = cls.donew(*args, **kwargs)
         _obj, args, kwargs = cls.dopreinit(_obj, *args, **kwargs)
         _obj, args, kwargs = cls.doinit(_obj, *args, **kwargs)
         _obj, args, kwargs = cls.dopostinit(_obj, *args, **kwargs)
         return _obj
+
+    # python 一切皆对象，一切皆指针
+    # 面向过程 --> 面向对象 --> 面向Github
 
 
 class AutoInfoClass(object):
