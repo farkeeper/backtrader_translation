@@ -25,6 +25,9 @@ if __name__ == "__main__":
     # 在这过程中，backtrader都干了什么：
     # 好像没干什么具体的事
     """
+    print("类的继承关系", bt.Cerebro.mro(), bt.Cerebro.__mro__)
+    print("赛萝卜的元类", type(bt.Cerebro))
+    print("赛萝卜的所有父类", bt.Cerebro.__bases__, bt.Cerebro.__class__)
 
     modpath = os.path.dirname(__file__)
     datapath = os.path.join(modpath, '../datas/yhoo-2003-2005.txt')

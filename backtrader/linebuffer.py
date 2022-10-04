@@ -25,7 +25,7 @@ linebuffer模块
 
 Classes that hold the buffer for a *line* and can operate on it
 with appends, forwarding, rewinding, resetting and other
-为line和增删改查操作的 具备缓存功能的类
+line和增删改查操作 具备缓存功能的 类
 
 .. moduleauthor:: Daniel Rodriguez
 

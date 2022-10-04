@@ -37,7 +37,9 @@ from .utils.py3 import range, with_metaclass
 
 from . import metabase
 
-
+"""
+mro()：类的继承关系
+"""
 class MetaLineRoot(metabase.MetaParams):
     '''
     Once the object is created (effectively pre-init) the "owner" of this
