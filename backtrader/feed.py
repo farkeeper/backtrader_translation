@@ -681,6 +681,7 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     The return value of ``_loadline`` (True/False) will be the return value
     of ``_load`` which has been overriden by this base class
     `_loadline`的返回值将被被重写的`_load`的返回值 通过该基类
+    `_load` 返回 通过该基类重写的`_loadline`的返回值
     '''
     # 类变量
     # 是类本身自己拥有的变量，类实例化时，会拷贝一份给实例对象。可通过 类名.类变量 调用，也可以 实例对象.类变量 调用
@@ -699,18 +700,19 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
                 self.f = self.p.dataname
             else:
                 # Let an exception propagate to let the caller know
+                # 以只读模式打开文件self.p.dataname，返回的数据流赋值给self.f，如果打开失败则抛出IOError
                 self.f = io.open(self.p.dataname, 'r')
 
-        if self.p.headers:
-            self.f.readline()  # skip the headers
+        if self.p.headers:  # 如果存在self.p.headers
+            self.f.readline()  # skip the headers 跳过标题
 
-        self.separator = self.p.separator
+        self.separator = self.p.separator   # 定义 分隔符
 
     def stop(self):
         super(CSVDataBase, self).stop()
-        if self.f is not None:
-            self.f.close()
-            self.f = None
+        if self.f is not None:  # 非空
+            self.f.close()  # 关闭
+            self.f = None   # 清空
 
     def preload(self):
         while self.load():
@@ -720,14 +722,16 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
         self.home()
 
         # preloaded - no need to keep the object around - breaks multip in 3.x
+        # 预加载 - 无需保留对象，3.x 多次中断？
         self.f.close()
         self.f = None
 
     def _load(self):
-        if self.f is None:
+        if self.f is None:  # 如果文件为空 返回False
             return False
 
         # Let an exception propagate to let the caller know
+        # 触发异常
         line = self.f.readline()
 
         if not line:
