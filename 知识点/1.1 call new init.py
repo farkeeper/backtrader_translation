@@ -42,3 +42,6 @@ if __name__ == "__main__":
     让你有手就有手，让你有爪子就有爪子。
     让你和他长得一个样，你俩就长得一个样。
     让A的数据B也能用，B就能用，所以，backtrader的cerebro有了data属性值，Stragegy能用这个data"""
+
+    (A,B,C,D) = range(4)
+    print(A,B,C,D)

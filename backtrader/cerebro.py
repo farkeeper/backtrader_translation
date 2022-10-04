@@ -346,22 +346,30 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Add a history of orders to be directly executed in the broker for
         performance evaluation
+        在经纪人 中 添加一份 直接执行的历史订单， 以进行绩效评估
 
           - ``fund``: is an iterable (ex: list, tuple, iterator, generator)
+          fund：是可迭代类型（如：数组、元组、迭代器、生成器）
             in which each element will be also an iterable (with length) with
             the following sub-elements (2 formats are possible)
+            其中每个元素都是可迭代的（有长度），包含以下子元素（可能有两种格式）
 
             ``[datetime, share_value, net asset value]``
+            [datetime, 价值，净值]
 
             **Note**: it must be sorted (or produce sorted elements) by
               datetime ascending
+            注意：必须按 日期时间 升序排列（或者生成排序的元素）
 
             where:
 
               - ``datetime`` is a python ``date/datetime`` instance or a string
                 with format YYYY-MM-DD[THH:MM:SS[.us]] where the elements in
                 brackets are optional
-              - ``share_value`` is an float/integer
+                ‘datetime’是python的‘date’或'datetime'类型，
+                或者 YYYY-MM-DD[THH:MM:SS[.us]] 格式的字符串，括号内的元素是可选的
+
+              - ``share_value`` is an float/integer     浮点数或整数
               - ``net_asset_value`` is a float/integer
         '''
         self._fhistory = fund
@@ -370,6 +378,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Add a history of orders to be directly executed in the broker for
         performance evaluation
+        在经纪人 中 添加一份 直接执行的历史订单， 以进行绩效评估
 
           - ``orders``: is an iterable (ex: list, tuple, iterator, generator)
             in which each element will be also an iterable (with length) with
@@ -566,6 +575,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
     def addcalendar(self, cal):
         '''Adds a global trading calendar to the system. Individual data feeds
         may have separate calendars which override the global one
+        给系统添加全球交易日历。
+        个别的 数据饲料 可以具有覆盖全球日历的 单独日历
 
         ``cal`` can be an instance of ``TradingCalendar`` a string or an
         instance of ``pandas_market_calendars``. A string will be will be
@@ -591,11 +602,14 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
     def add_signal(self, sigtype, sigcls, *sigargs, **sigkwargs):
         '''Adds a signal to the system which will be later added to a
-        ``SignalStrategy``'''
+        ``SignalStrategy``
+        给系统添加 signal信号，此信号将被添加给 信号策略 ‘SignalStrategy’
+        '''
         self.signals.append((sigtype, sigcls, sigargs, sigkwargs))
 
     def signal_strategy(self, stratcls, *args, **kwargs):
-        '''Adds a SignalStrategy subclass which can accept signals'''
+        '''Adds a SignalStrategy subclass which can accept signals
+        添加可以接受信号的 信号策略子类'''
         self._signal_strat = (stratcls, args, kwargs)
 
     def signal_concurrent(self, onoff):
@@ -610,13 +624,16 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self._signal_accumulate = onoff
 
     def addstore(self, store):
-        '''Adds an ``Store`` instance to the if not already present'''
-        if store not in self.stores:
-            self.stores.append(store)
+        '''Adds an ``Store`` instance to the if not already present
+        添加一个 目前还不存在的 ‘Store’实例
+        '''
+        if store not in self.stores:    # 如果stores里没有store
+            self.stores.append(store)   # stores追加store（整体） extend是（打碎）追加元素
 
     def addwriter(self, wrtcls, *args, **kwargs):
         '''Adds an ``Writer`` class to the mix. Instantiation will be done at
         ``run`` time in cerebro
+        添加 ‘Writer’类，将在cerebro的run运行的时候 实例化
         '''
         self.writers.append((wrtcls, args, kwargs))
 
@@ -651,6 +668,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Adds an ``Observer`` class to the mix. Instantiation will be done at
         ``run`` time
+        添加‘Observer’类，run的时候进行实例化
         '''
         self.observers.append((False, obscls, args, kwargs))
 
@@ -689,13 +707,17 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
     def notify_store(self, msg, *args, **kwargs):
         '''Receive store notifications in cerebro
+        接收、储存 通知
 
         This method can be overridden in ``Cerebro`` subclasses
+        此方法可以在‘Cerebro’中被重写
 
         The actual ``msg``, ``*args`` and ``**kwargs`` received are
         implementation defined (depend entirely on the *data/broker/store*) but
         in general one should expect them to be *printable* to allow for
         reception and experimentation.
+        实际收到的``msg``、``*args``和``*kwargs``是被定义的工具（完全取决于*data/broker/store*），
+        但一般来说，人们应该期望它们是可打印的，以便接收和实验。
         '''
         pass
 
@@ -752,18 +774,26 @@ class Cerebro(with_metaclass(MetaParams, object)):
     def adddata(self, data, name=None):
         '''
         Adds a ``Data Feed`` instance to the mix.
+        添加一个 数据饲料 实例 到组合中，名字默认为空
 
         If ``name`` is not None it will be put into ``data._name`` which is
         meant for decoration/plotting purposes.
+        如果‘name’非空，他将被赋值给‘data._name’，用于绘图。
+
+        # 函数体 ：
+        next（迭代器[，默认值]）
+        从迭代器返回下一项。如果给定默认值，并且迭代器已用完，则返回它，而不引发StopIteration。
         '''
+        # 如果名字非空，就赋值给data._name
         if name is not None:
             data._name = name
 
         data._id = next(self._dataid)
         data.setenvironment(self)
 
-        self.datas.append(data)
+        self.datas.append(data)     # 类实例的datas属性添加data元素
         self.datasbyname[data._name] = data
+        # 由下句可知，data是类
         feed = data.getfeed()
         if feed and feed not in self.feeds:
             self.feeds.append(feed)

@@ -37,6 +37,16 @@ from .dataseries import SimpleFilterWrapper
 from .resamplerfilter import Resampler, Replayer
 from .tradingcal import PandasMarketCalendar
 
+__all__ = ['MetaAbstractDataBase',  # 抽象数据基类的元类
+           'AbstractDataBase',  # 抽象数据基类
+           'DataBase',  # 数据基类
+           'FeedBase',  # 饲料基类
+           'MetaCSVDataBase',  # CSV数据基类的元类
+           'CSVDataBase',  # CSV数据基类
+           'CSVFeedBase',  # CSV饲料基类
+           'DataClone',  # 抽象数据基类的派生类
+           ]
+
 
 class MetaAbstractDataBase(dataseries.OHLCDateTime.__class__):
     _indcol = dict()
@@ -44,12 +54,14 @@ class MetaAbstractDataBase(dataseries.OHLCDateTime.__class__):
     def __init__(cls, name, bases, dct):
         '''
         Class has already been created ... register subclasses
+        类已创建，注册子类
         '''
         # Initialize the class
+        # 父类初始化 ： 调用父类的初始化函数
         super(MetaAbstractDataBase, cls).__init__(name, bases, dct)
 
-        if not cls.aliased and \
-           name != 'DataBase' and not name.startswith('_'):
+        # 如果利用我这个元类创建的类没有别名 并且 类名不是'DataBase’ 并且 类名不是以下划线开头
+        if not cls.aliased and name != 'DataBase' and not name.startswith('_'):
             cls._indcol[name] = cls
 
     def dopreinit(cls, _obj, *args, **kwargs):
@@ -121,6 +133,7 @@ class MetaAbstractDataBase(dataseries.OHLCDateTime.__class__):
 
 class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
                                       dataseries.OHLCDateTime)):
+    """抽象数据基类 """
 
     params = (
         ('dataname', None),
@@ -135,18 +148,22 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
         ('tz', None),
         ('tzinput', None),
         ('qcheck', 0.0),  # timeout in seconds (float) to check for events
+        # 以秒为单位检查事件
         ('calendar', None),
     )
 
+    # 分别赋值为 0,1,2,3,4,5,6,7
     (CONNECTED, DISCONNECTED, CONNBROKEN, DELAYED,
      LIVE, NOTSUBSCRIBED, NOTSUPPORTED_TF, UNKNOWN) = range(8)
 
+    # 放在数组里
     _NOTIFNAMES = [
         'CONNECTED', 'DISCONNECTED', 'CONNBROKEN', 'DELAYED',
         'LIVE', 'NOTSUBSCRIBED', 'NOTSUPPORTED_TIMEFRAME', 'UNKNOWN']
 
-    @classmethod
+    @classmethod  # 类方法  可 类名.fun() 直接调用
     def _getstatusname(cls, status):
+        """ 获取属性值 """
         return cls._NOTIFNAMES[status]
 
     _compensate = None
@@ -157,6 +174,7 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
     _qcheck = 0.0
 
     _tmoffset = datetime.timedelta()
+    # 时间差 datetime.datetime.now() + datetime.timedelta(days=1) 一天后的时间
 
     # Set to non 0 if resampling/replaying
     resampling = 0
@@ -292,6 +310,7 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
         return notifs
 
     def getfeed(self):
+        """Cerebro类中有 feed = data.getfeed()"""
         return self._feed
 
     def qbuffer(self, savemem=0, replaying=False):
