@@ -82,7 +82,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         多少内核并行 优化
 
       - ``stdstats`` (default: ``True``)
-        默认模式
+        标准模式
         If True default Observers will be added: Broker (Cash and Value),
         Trades and BuySell
         若为True，默认的观察者将被添加：经纪人、交易、买卖
@@ -270,9 +270,9 @@ class Cerebro(with_metaclass(MetaParams, object)):
     # params是在哪里定义的？metabase模块的 MetaParams(MetaBase)：参数类的元类
     params = (
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
-        ('runonce', True),
-        ('maxcpus', None),
-        ('stdstats', True),
+        ('runonce', True),  # 矢量化运行 ： 是
+        ('maxcpus', None),  # 最大核心数 ：默认 所有核心一块干
+        ('stdstats', True),     # 标准模式
         ('oldbuysell', False),
         ('oldtrades', False),
         ('lookahead', 0),
@@ -291,6 +291,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
     )
 
     def __init__(self):
+        """初始化函数 类的实例化（实体，具体的对象）时会调用 """
         self._dolive = False
         self._doreplay = False
         self._dooptimize = False
@@ -323,21 +324,23 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self._ohistory = list()
         self._fhistory = None
 
-    @staticmethod
+    @staticmethod   # 静态方法 不用实例化就能使用 类名.函数名() 调用 和@classmethod差不多 https://blog.csdn.net/EMIvv/article/details/122482756
     def iterize(iterable):
         '''Handy function which turns things into things that can be iterated upon
         including iterables
+        灵活函数，把东西转换为可迭代的，包括iterables
         '''
-        niterable = list()
+        niterable = list()      # 定义一个数组
         for elem in iterable:
-            if isinstance(elem, string_types):
-                elem = (elem,)
-            elif not isinstance(elem, collections.Iterable):
-                elem = (elem,)
+            if isinstance(elem, string_types):  # 如果 elem 是 字符串类型 （的实例）
+                elem = (elem,)      # 转换成元组
+            elif not isinstance(elem, collections.Iterable):    # 如果不是 类型
+                elem = (elem,)      # 也转换成元组
 
-            niterable.append(elem)
+            niterable.append(elem)      # 末尾追加 元素
 
         return niterable
+    # 只要不是 collections.Iterable 类型 就转换成 元组
 
     def set_fund_history(self, fund):
         '''
