@@ -62,7 +62,7 @@ if __name__ == "__main__":
     #             dq.appendleft(line)
     #         # print(dq)
     #
-    #         # 写入到内存缓冲区
+    #         # 写入到缓存
     #         f = io.StringIO(newline=None)
     #         f.writelines(dq)
     #         f.seek(0)  # 把光标移动到开头
