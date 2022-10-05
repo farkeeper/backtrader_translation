@@ -43,7 +43,7 @@ class YahooFinanceCSVData(feed.CSVDataBase):
     '''
     Parses pre-downloaded Yahoo CSV Data Feeds (or locally generated if they
     comply to the Yahoo format)
-    解析预加载的CSV数据（如果符合雅虎格式则本地生成）
+    解析预加载CSV数据（如果符合雅虎格式则本地生成）
 
     Specific parameters:
     指定参数如下：
@@ -52,12 +52,14 @@ class YahooFinanceCSVData(feed.CSVDataBase):
       dataname：要解析的文件名 或者 诸如此类的对象
 
       - ``reverse`` (default: ``False``)
+        反转数据：否
 
         It is assumed that locally stored files have already been reversed
         during the download process
+        本地存储的文件在下载过程中是否被反转：默认 否
 
       - ``adjclose`` (default: ``True``)
-
+        是否复权：是
         Whether to use the dividend/split adjusted close and adjust all
         values according to it.
 
@@ -69,6 +71,7 @@ class YahooFinanceCSVData(feed.CSVDataBase):
 
         Whether to round the values to a specific number of decimals after
         having adjusted the close
+        是否调节小数精度
 
       - ``roundvolume`` (default: ``0``)
 
@@ -86,35 +89,43 @@ class YahooFinanceCSVData(feed.CSVDataBase):
         swap the columns again arose.
 
     '''
-    # 类变量 可通过 类名.类变量名 直接调用，类的实例也可直接拥有
+    # 类变量 可通过 类名.类变量名 直接调用，类的实例 可直接拥有
     lines = ('adjclose',)
 
     params = (
-        ('reverse', False),
-        ('adjclose', True),
-        ('adjvolume', True),
-        ('round', True),
-        ('decimals', 2),
+        ('reverse', False),     # 反转数据：否
+        ('adjclose', True),     # 复权：是
+        ('adjvolume', True),    #
+        ('round', True),        # 调节小数精度
+        ('decimals', 2),        # 小数点后的精度 ： 2位
         ('roundvolume', False),
         ('swapcloses', False),
     )
 
     def start(self):
-        super(YahooFinanceCSVData, self).start()
+        super(YahooFinanceCSVData, self).start()    # 调用超类的start()
 
-        if not self.params.reverse:
+        if not self.params.reverse:     # 是否反转数据 这个参数必须有，如果没有则退出
             return
 
         # Yahoo sends data in reverse order and the file is still unreversed
-        dq = collections.deque()
+        # Yahoo以倒序发送数据 并且 文件没有反转数据
+        dq = collections.deque()    # 定义一个数据容器（双向队列），类似list，可以在头尾快速增删元素
         for line in self.f:
-            dq.appendleft(line)
+            dq.appendleft(line)     # 左侧添加元素
 
+        # StringIO 在内存中以 io（输入输出） 流的方式读写 str https://www.cnblogs.com/mtcnn/p/9421724.html
+        # https://www.jianshu.com/p/c9ecddf8b87f
         f = io.StringIO(newline=None)
-        f.writelines(dq)
-        f.seek(0)
+        f.writelines(dq)    # 从读写位置将dq写入给对象f。读写位置被移动。
+        f.seek(0)       # 将指针移到开头
         self.f.close()
         self.f = f
+        """
+        StringIO的行为与file对象非常像，但它不是磁盘上文件，而是一个内存里的"文件"，
+        在内存中读写str，我们可以像操作磁盘文件那样来操作StringIO，主要用于在内存缓冲区中读写数据.
+        创建一个StingIO对象，寄存在缓冲区，可选参数buf是一个str或unicode类型，它将会与后续写的数据存放一起。
+        """
 
     def _loadline(self, linetokens):
         while True:
