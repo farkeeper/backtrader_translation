@@ -78,9 +78,11 @@ __call__()函数 使 类名 可以像函数一样被调用，有返回值
     就可以 A() 
 """
 class MetaBase(type):
-    """ 元类 显式继承type
-    由名字可知元类 MetaBase 是所有元类的基类
-    backtrader可能有很多元类，这些元类负责创建不同的类，但这些元类都继承自MetaBase
+    """
+    元基类：backtrader所有类的老祖宗
+    元类 必须显式继承type
+    由名字猜想元类 MetaBase 是所有元类的基类
+    backtrader可能有很多元类，这些元类负责创建不同的类，但这些元类都继承自 基类MetaBase
     像：
         MetaBase是玉帝，玉帝手下有很多神仙，这些都是元类，元类负责创建类。
         神仙负责创建不同的类(型)，动物类、人类、植物类、建筑类；   狗类、鸡类、菊花类、学生类、商品房类
@@ -112,15 +114,19 @@ class MetaBase(type):
         """call函数使 类 可调用，如 类名()
         谁调用谁就是cls，谁(metaclass=MetaBase)， 谁就是cls
         """
+        print("看谁调用了bt的老祖宗元基类MetaBase", __file__)
         cls, args, kwargs = cls.doprenew(*args, **kwargs)
         _obj, args, kwargs = cls.donew(*args, **kwargs)
         _obj, args, kwargs = cls.dopreinit(_obj, *args, **kwargs)
         _obj, args, kwargs = cls.doinit(_obj, *args, **kwargs)
         _obj, args, kwargs = cls.dopostinit(_obj, *args, **kwargs)
-        return _obj
+        return _obj     # 一切皆对象
 
     # python 一切皆对象，一切皆指针
     # 面向过程 --> 面向对象 --> 面向Github
+    """
+    元基类MetaBase老祖宗，未实现new函数，应让 子类实现
+    """
 
 
 class AutoInfoClass(object):
@@ -333,6 +339,7 @@ class MetaParams(MetaBase):
         _obj.p = params  # shorter alias
 
         # Parameter values have now been set before __init__
+        # 在初始化之前参数值已被设置完毕
         return _obj, args, kwargs
 
 

@@ -2,20 +2,7 @@
 # -*- coding: utf-8; py-indent-offset:4 -*-
 ###############################################################################
 #
-# Copyright (C) 2015-2020 Daniel Rodriguez
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #
 ###############################################################################
 """
@@ -53,29 +40,36 @@ class LineBuffer(LineSingle):
     '''
     LineBuffer defines an interface to an "array.array" (or list) in which
     index 0 points to the item which is active for input and output.
+    LineBuffer类定义了一个接口， 索引0指向当前项
 
     Positive indices fetch values from the past (left hand side)
     Negative indices fetch values from the future (if the array has been
     extended on the right hand side)
+    正数索引往左取值，负数索引往右取值（如果array右边有值的话）
 
     With this behavior no index has to be passed around to entities which have
     to work with the current value produced by other entities: the value is
     always reachable at "0".
+    如此设计，不必把索引传递给 需要当前值才能工作的实例，0 索引就能获得当前值
 
     Likewise storing the current value produced by "self" is done at 0.
+    同样，通过self产生的当前值也在 索引0 存储着
 
     Additional operations to move the pointer (home, forward, extend, rewind,
     advance getzero) are provided
+    提供了移动指针的附加操作（home、forward、extend、rewind、advance-getzero）
 
     The class can also hold "bindings" to other LineBuffers. When a value
     is set in this class
     it will also be set in the binding.
+    当该类的值被设定后，该类可以携带‘绑定’到其他的LineBuffers类上。
+    他也可以在‘绑定’里被设置
     '''
 
     UnBounded, QBuffer = (0, 1)
 
     def __init__(self):
-        self.lines = [self]
+        self.lines = [self]     # 一切皆对象，self代表实例，实例是对象
         self.mode = self.UnBounded
         self.bindings = list()
         self.reset()
@@ -93,16 +87,27 @@ class LineBuffer(LineSingle):
         # forward/backwards, because the last input is read, and after a
         # "backwards" is used to update the previous data. Unless the position
         # 0 was moved to the previous index, it would fail
-        if self.mode == self.QBuffer:
+        """
+        设置索引
+        如果QBuffer到达了缓冲区的最后一个位置，则将其保留为索引0（除非强制），这允许重采样。
+        - forward 增加位置，但是第一个将被丢弃，0不变强制支持重新播放，这需要另外的bar来前后浮动，
+        因为最后一个输入被读取，后一个就会被更新为前一个，除非位置0被移动到上一个索引，否则就会失败
+
+        :param idx:
+        :param force:
+        :return:
+        """
+        if self.mode == self.QBuffer:   # 如果self.mode 为 1
             if force or self._idx < self.lenmark:
                 self._idx = idx
         else:  # default: UnBounded
             self._idx = idx
 
     idx = property(get_idx, set_idx)
-
+    # @property动态属性
     def reset(self):
         ''' Resets the internal buffer structure and the indices
+        重置内部缓冲区结构和索引
         '''
         if self.mode == self.QBuffer:
             # add extrasize to ensure resample/replay work because they will
@@ -133,6 +138,7 @@ class LineBuffer(LineSingle):
     def minbuffer(self, size):
         '''The linebuffer must guarantee the minimum requested size to be
         available.
+        linebuffer可用的最小尺寸要求
 
         In non-dqbuffer mode, this is always true (of course until data is
         filled at the beginning, there are less values, but minperiod in the
