@@ -44,6 +44,7 @@ class MetaLineRoot(metabase.MetaParams):
     '''
     Once the object is created (effectively pre-init) the "owner" of this
     class is sought
+    一旦对象被创建（实际上是预初始化），就会查询这个类的所有者
     '''
 
     def donew(cls, *args, **kwargs):
@@ -51,12 +52,14 @@ class MetaLineRoot(metabase.MetaParams):
 
         # Find the owner and store it
         # startlevel = 4 ... to skip intermediate call stacks
+        # 查找所有者并存储 开始级别=4 跳过中间的堆栈
         ownerskip = kwargs.pop('_ownerskip', None)
         _obj._owner = metabase.findowner(_obj,
                                          _obj._OwnerCls or LineMultiple,
                                          skip=ownerskip)
 
         # Parameter values have now been set before __init__
+        # 在 __init__ 之前前 参数值已被设置
         return _obj, args, kwargs
 
 
@@ -64,6 +67,7 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
     '''
     Defines a common base and interfaces for Single and Multiple
     LineXXX instances
+    为 单线 和多线 定义一个通用接口 基础类
 
         Period management
         Iteration management
@@ -96,8 +100,11 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
         return self._operationown_stage2(operation)
 
     def qbuffer(self, savemem=0):
-        '''Change the lines to implement a minimum size qbuffer scheme'''
+        """Change the lines to implement a minimum size qbuffer scheme
+        更改lines使之适应缓冲区大小"""
         raise NotImplementedError
+    # 这里没有用abc.abstractmethod
+    # 抛出 未实现错误 很好的提示作用
 
     def minbuffer(self, size):
         '''Receive notification of how large the buffer must at least be'''
