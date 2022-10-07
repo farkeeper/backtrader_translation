@@ -15,9 +15,9 @@ class Meta(type):
     """ 元类 必须显式继承 type"""
     def __new__(cls, name, bases, attr):
         """开辟内存空间
-        必须有返回值，自动赋给 __init__ 的self
-        __init__参数必须与new一致"""
-        # print("这是啥", type(Meta).__new__(cls, name, bases, attr))
+        必须有返回值，自动赋给 __init__
+        所以，__init__参数必须与new一致"""
+        # print("调用type的new函数创建一个meta类型的类", type(Meta).__new__(cls, name, bases, attr))
         return type(Meta).__new__(cls, name, bases, attr)
 
     def __init__(self, name, bases, attr):

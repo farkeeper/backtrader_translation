@@ -2,20 +2,7 @@
 # -*- coding: utf-8; py-indent-offset:4 -*-
 ###############################################################################
 #
-# Copyright (C) 2015-2020 Daniel Rodriguez
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 元基类模块：祖宗类
 #
 ###############################################################################
 from __future__ import (absolute_import, division, print_function,
@@ -44,15 +31,19 @@ def findbases(kls, topclass):
     # 迭代法可以吗？
 
 def findowner(owned, cls, startlevel=2, skip=None):
+    """ 查找调用者 """
     # skip this frame and the caller's -> start at 2
+    # 跳过本框框和调用者 - 从2级开始
+    # 无限迭代器 从startlevel开始步长为1，从无限迭代器里挨个取出
     for framelevel in itertools.count(startlevel):
         try:
+            # 查看函数被什么函数调用以及被第几行调用及被调用函数所在文件
             frame = sys._getframe(framelevel)
         except ValueError:
             # Frame depth exceeded ... no owner ... break away
             break
 
-        # 'self' in regular code
+        # 'self' in regular code    正常代码中的self
         self_ = frame.f_locals.get('self', None)
         if skip is not self_:
             if self_ is not owned and isinstance(self_, cls):
@@ -67,7 +58,7 @@ def findowner(owned, cls, startlevel=2, skip=None):
     return None
 
 """
-__call__()函数 使 类名 可以像函数一样被调用，有返回值
+__call__()函数 使 类名 可以像函数一样被调用，必须有返回值
 类名后面加(),就像个函数一样。
 可见类的返回值从__call__而来
 如:
@@ -80,8 +71,8 @@ __call__()函数 使 类名 可以像函数一样被调用，有返回值
 class MetaBase(type):
     """
     元基类：backtrader所有类的老祖宗
-    元类 必须显式继承type
     由名字猜想元类 MetaBase 是所有元类的基类
+    元类 必须显式继承type
     backtrader可能有很多元类，这些元类负责创建不同的类，但这些元类都继承自 基类MetaBase
     像：
         MetaBase是玉帝，玉帝手下有很多神仙，这些都是元类，元类负责创建类。
@@ -125,7 +116,7 @@ class MetaBase(type):
     # python 一切皆对象，一切皆指针
     # 面向过程 --> 面向对象 --> 面向Github
     """
-    元基类MetaBase老祖宗，未实现new函数，应让 子类实现
+    元基类MetaBase老祖宗，未实现new函数，应让 子类 实现
     """
 
 
@@ -344,13 +335,15 @@ class MetaParams(MetaBase):
 
 
 class ParamsBase(with_metaclass(MetaParams, object)):
-    pass  # stub to allow easy subclassing without metaclasses
+    pass
+    # stub to allow easy subclassing without metaclasses
+    # 没有元类的情况下轻松子类化？
 
 
 class ItemCollection(object):
     '''
     Holds a collection of items that can be reached by
-
+    保存一个可以通过 index和name 访问具体项 的 集合
       - Index
       - Name (if set in the append operation)
     '''
