@@ -160,7 +160,9 @@ def with_metaclass(meta, *bases):
             return meta(name, bases, d)
 
     return type.__new__(metaclass, str('temporary_class'), (), {})
+    # 使用元类meta创建一个元类metaclass（基类是bases）
     # 调用type类的__new__函数，创建一个metaclass类型的对象，命名为temporary_class
+    # 作为一个基类
 
     # Cerebro类继承自temporary_class类
     # Cerebro类未指明元类，所以调用父类temporary_class类的元类meta（即MetaParams）来生成类

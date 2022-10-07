@@ -107,7 +107,9 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
     # 抛出 未实现错误 很好的提示作用
 
     def minbuffer(self, size):
-        '''Receive notification of how large the buffer must at least be'''
+        """Receive notification of how large the buffer must at least be
+        接收缓冲区最小尺寸的通知
+        """
         raise NotImplementedError
 
     def setminperiod(self, minperiod):
@@ -115,6 +117,8 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
         Direct minperiod manipulation. It could be used for example
         by a strategy
         to not wait for all indicators to produce a value
+        直接指定最小周期。可以用于策略
+        而不必等所有指标都生成值
         '''
         self._minperiod = minperiod
 
@@ -122,6 +126,9 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
         '''
         Update the minperiod if needed. The minperiod will have been
         calculated elsewhere
+        如果需要的话更新最小周期。
+        最小周期将被计算
+        如果self的更大必须接管
         and has to take over if greater that self's
         '''
         self._minperiod = max(self._minperiod, minperiod)
@@ -129,18 +136,21 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
     def addminperiod(self, minperiod):
         '''
         Add a minperiod to own ... to be defined by subclasses
+        为所有者添加一个最小周期，将在子类定义
         '''
         raise NotImplementedError
 
     def incminperiod(self, minperiod):
         '''
         Increment the minperiod with no considerations
+        自增加最小周期 无需考虑
         '''
         raise NotImplementedError
 
     def prenext(self):
         '''
         It will be called during the "minperiod" phase of an iteration.
+        将在 迭代‘最小周期’阶段 被调用
         '''
         pass
 
@@ -149,12 +159,15 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
         It will be called when the minperiod phase is over for the 1st
         post-minperiod value. Only called once and defaults to automatically
         calling next
+        第一个 ‘最小周期’阶段 结束时将被调用
+        仅被调用一次，默认会自动调用下一轮
         '''
         self.next()
 
     def next(self):
         '''
         Called to calculate values when the minperiod is over
+        当最小周期结束时 将被调用 来计算值
         '''
         pass
 

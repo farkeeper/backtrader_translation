@@ -2,20 +2,9 @@
 # -*- coding: utf-8; py-indent-offset:4 -*-
 ###############################################################################
 #
-# Copyright (C) 2015-2020 Daniel Rodriguez
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 模块名称
+# 模块功能
+# 应用场景
 #
 ###############################################################################
 from __future__ import (absolute_import, division, print_function,
@@ -41,6 +30,7 @@ from .utils import OrderedDict, AutoOrderedDict, AutoDictList
 
 
 class MetaStrategy(StrategyBase.__class__):
+    """ 策略类的元类 基类是StrategyBase.__class__"""
     _indcol = dict()
 
     def __new__(meta, name, bases, dct):
@@ -61,8 +51,7 @@ class MetaStrategy(StrategyBase.__class__):
         # Initialize the class
         super(MetaStrategy, cls).__init__(name, bases, dct)
 
-        if not cls.aliased and \
-           name != 'Strategy' and not name.startswith('_'):
+        if not cls.aliased and name != 'Strategy' and not name.startswith('_'):
             cls._indcol[name] = cls
 
     def donew(cls, *args, **kwargs):
@@ -107,6 +96,7 @@ class MetaStrategy(StrategyBase.__class__):
 class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
     '''
     Base class to be subclassed for user defined strategies.
+    自定义策略类的基类
     '''
 
     _ltype = LineIterator.StratType
@@ -115,6 +105,7 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
     _oldsync = False  # update clock using old methodology : data 0
 
     # keep the latest delivered data date in the line
+    # 在line中保持最新日期
     lines = ('datetime',)
 
     def qbuffer(self, savemem=0, replaying=False):

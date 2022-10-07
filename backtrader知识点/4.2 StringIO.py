@@ -9,6 +9,7 @@
 import collections
 import io
 import os
+import sys
 
 if __name__ == "__main__":
     modpath = os.path.dirname(__file__)
@@ -27,3 +28,4 @@ if __name__ == "__main__":
     f.seek(0)
     f.close()
     print(f)
+    print("大小", sys.getsizeof(f))

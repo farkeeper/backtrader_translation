@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8; py-indent-offset:4 -*-
 ###############################################################################
-#
-#
+# 模块名称
+# 模块功能
+# 应用场景
+# 涉及知识
+# 待解问题
 ###############################################################################
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -32,18 +35,18 @@ from .timer import Timer
 
 
 # Defined here to make it pickable. Ideally it could be defined inside Cerebro
-# 在这里定义以期他可以被拾取，理想状态下他可以在Cerebro内部定义
-
+# 在这里定义以期他可以被拾取，理想状态下他将在Cerebro内部被定义
+# 翻译的不对
 class OptReturn(object):
     def __init__(self, params, **kwargs):   # 位置参数 关键字参数
         self.p = self.params = params
         for k, v in kwargs.items():     # 遍历字典 关键字参数以字典类型传递
-            setattr(self, k, v)     # 设置属性值，属性可以是新增的
+            setattr(self, k, v)     # 为self设置属性值（属性可以是新增）
 
 
 class Cerebro(with_metaclass(MetaParams, object)):
     '''
-    赛萝卜：backtrader的大脑，发动机
+    赛萝卜：backtrader的大脑、发动机、回测引擎
     Params:
     参数：
 
@@ -52,6 +55,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         Whether to preload the different ``data feeds`` passed to cerebro for
         the Strategies
         是否把传递给 cerebro的 ’数据饲料‘ 预加载 给 策略
+        怎么传递的呢？
 
       - ``runonce`` (default: ``True``)
         矢量化运行：是
@@ -199,7 +203,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         测试表明：可以提高20%的性能
 
       - ``optreturn`` (default: ``True``)
-        优化返回
+        优化返回结果 <本页定义了Optreturn类>
         If ``True`` the optimization results will not be full ``Strategy``
         objects (and all *datas*, *indicators*, *observers* ...) but and object
         with the following attributes (same as in ``Strategy``):
@@ -315,7 +319,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self._doreplay = False
         self._dooptimize = False
         self.stores = list()
-        self.feeds = list()     # 饲料？
+        self.feeds = list()     # 饲料
         self.datas = list()     # 数据
         self.datasbyname = collections.OrderedDict()
         self.strats = list()    # 策略
@@ -731,7 +735,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         接收、储存 通知
 
         This method can be overridden in ``Cerebro`` subclasses
-        此方法可以在‘Cerebro’中被重写
+        此方法可以在‘Cerebro’类中被重写
 
         The actual ``msg``, ``*args`` and ``**kwargs`` received are
         implementation defined (depend entirely on the *data/broker/store*) but
