@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8; py-indent-offset:4 -*-
 # ====================================================
-# 名称：
+# 名称：bt 的数据加载过程
 # 简介：
 # 时间：2022/10/5 - 18:20
 # 作者：farserver@163.com
@@ -12,7 +12,7 @@ bt 的数据加载过程
 在feed.CSVDataBase里：
     打开文件，定义分隔符，跳过第一行的标题（列名），删除末尾的回车符
 在 YahooFinanceCSVData 里实现了_loadline方法：
-
+    按行读取
 
 """
 # python io模块详解
@@ -38,17 +38,48 @@ class io.StringIO(initial_value='', newline='\n')
 """
 
 import backtrader as bt
+# Create a Stratey
+class TestStrategy(bt.Strategy):
+    print("TESTSTRAEGY")
+
+    def log(self, txt, dt=None):
+        ''' Logging function fot this strategy'''
+        dt = dt or self.datas[0].datetime.date(0)
+        print('%s, %s' % (dt.isoformat(), txt))
+
+    def __init__(self):
+        # Keep a reference to the "close" line in the data[0] dataseries
+        self.dataclose = self.datas[0].close
+
+    def next(self):
+        print("TestStratgy-next")
+        # Simply log the closing price of the series from the reference
+        self.log('Close, %.2f' % self.dataclose[0])
+
+        if self.dataclose[0] < self.dataclose[-1]:
+            # current close less than previous close
+
+            if self.dataclose[-1] < self.dataclose[-2]:
+                # previous close less than the previous close
+
+                # BUY, BUY, BUY!!! (with all possible default parameters)
+                self.log('BUY CREATE, %.2f' % self.dataclose[0])
+                self.buy()
 
 if __name__ == "__main__":
     modpath = os.path.dirname(__file__)
-    data_path = os.path.join(modpath, '../datas/yhoo-2003-2005.txt')
+    data_path = os.path.join(modpath, '../datas/yhoo-2014.txt')
 
     cerebro = bt.Cerebro()
     data = bt.feeds.YahooFinanceCSVData(
         dataname=data_path,
-        fromdate=datetime.datetime(2021, 10, 1),
-        todate=datetime.datetime(2022, 10, 1)
+        fromdate=datetime.datetime(2014, 1, 1),
+        todate=datetime.datetime(2014, 12, 1)
     )
-    # cerebro.adddata(data)
-
+    print("到此为止，还没有逐行取出数据")
+    cerebro.adddata(data)
+    cerebro.addstrategy(TestStrategy)   # 只是创建了策略类还没有实例化
+    cerebro.broker.setcash(100000.0)
+    # run是怎么驱动strategy的？
+    cerebro.run()
     # 调用了类，类方法里面的print语句打印不出来，什么原因？

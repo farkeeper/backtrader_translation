@@ -323,7 +323,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self.datas = list()     # 数据
         self.datasbyname = collections.OrderedDict()
         self.strats = list()    # 策略
-        self.optcbs = list()  # holds a list of callbacks for opt strategies
+        self.optcbs = list()  # holds a list of callbacks for opt strategies 保存 策略的回调列表
         self.observers = list()     # 观察者
         self.analyzers = list()     # 分析员
         self.indicators = list()    # 指标
@@ -1100,10 +1100,10 @@ class Cerebro(with_metaclass(MetaParams, object)):
         所有传递进来的参数都会影响到Cerebro的实例的执行结果
 
         If ``cerebro`` has not datas the method will immediately bail out.
-        如果 cerebro无数据，本方法将立刻推出
+        如果 cerebro无数据，本方法将立刻退出
 
         It has different return values:
-        不同的返回值：
+        不同的返回结果：
 
           - For No Optimization: a list contanining instances of the Strategy
             classes added with ``addstrategy``
@@ -1115,24 +1115,27 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         self._event_stop = False  # Stop is requested
 
+        # 如果没有数据则返回空列表
         if not self.datas:
             return []  # nothing can be run
 
+        # 设置参数属性值
         pkeys = self.params._getkeys()
         for key, val in kwargs.items():
             if key in pkeys:
                 setattr(self.params, key, val)
 
         # Manage activate/deactivate object cache
-        linebuffer.LineActions.cleancache()  # clean cache
+        # 缓存管理 管理激活的和停用的对象缓存
+        linebuffer.LineActions.cleancache()  # clean cache      # MetaLineActions类
         indicator.Indicator.cleancache()  # clean cache
 
         linebuffer.LineActions.usecache(self.p.objcache)
         indicator.Indicator.usecache(self.p.objcache)
 
-        self._dorunonce = self.p.runonce
-        self._dopreload = self.p.preload
-        self._exactbars = int(self.p.exactbars)
+        self._dorunonce = self.p.runonce    # 矢量化
+        self._dopreload = self.p.preload    # 预加载
+        self._exactbars = int(self.p.exactbars)     # 正在执行的当前bar
 
         if self._exactbars:
             self._dorunonce = False  # something is saving memory, no runonce
@@ -1152,21 +1155,24 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self.runwriters = list()
 
         # Add the system default writer if requested
+        # 设置一个默认的记录员
         if self.p.writer is True:
             wr = WriterFile()
             self.runwriters.append(wr)
 
         # Instantiate any other writers
+        # 实例化其他记录员
         for wrcls, wrargs, wrkwargs in self.writers:
             wr = wrcls(*wrargs, **wrkwargs)
             self.runwriters.append(wr)
 
         # Write down if any writer wants the full csv output
+        # csv记下所有记录
         self.writers_csv = any(map(lambda x: x.p.csv, self.runwriters))
 
         self.runstrats = list()
 
-        if self.signals:  # allow processing of signals
+        if self.signals:  # allow processing of signals 允许处理信号
             signalst, sargs, skwargs = self._signal_strat
             if signalst is None:
                 # Try to see if the 1st regular strategy is a signal strategy
@@ -1192,10 +1198,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
                              *sargs,
                              **skwargs)
 
+        # 添加策略
         if not self.strats:  # Datas are present, add a strategy
             self.addstrategy(Strategy)
 
-        iterstrats = itertools.product(*self.strats)
+        iterstrats = itertools.product(*self.strats)    # 组合式迭代器 策略的
         if not self._dooptimize or self.p.maxcpus == 1:
             # If no optimmization is wished ... or 1 core is to be used
             # let's skip process "spawning"
@@ -1206,29 +1213,36 @@ class Cerebro(with_metaclass(MetaParams, object)):
                     for cb in self.optcbs:
                         cb(runstrat)  # callback receives finished strategy
         else:
+            # 如果优化、预加载、矢量化
             if self.p.optdatas and self._dopreload and self._dorunonce:
+                """ # 循环提取数据 """
                 for data in self.datas:
                     data.reset()
                     if self._exactbars < 1:  # datas can be full length
                         data.extend(size=self.params.lookahead)
-                    data._start()
+
+                    # print("data._start()在这里准备调用CSVDataBase类方法_start()")
+                    data._start()   # 在这里调用了CSVDataBase类方法_start()
                     if self._dopreload:
                         data.preload()
 
-            pool = multiprocessing.Pool(self.p.maxcpus or None)
+            # 多进程 干嘛这是
+            # pool.imap()一旦生成就会开始，返回迭代器格式，缓存在内存里
+            print("多进程 干嘛这是")
+            pool = multiprocessing.Pool(self.p.maxcpus or None)     # maxcpus进程数
             for r in pool.imap(self, iterstrats):
                 self.runstrats.append(r)
                 for cb in self.optcbs:
-                    cb(r)  # callback receives finished strategy
+                    cb(r)  # callback receives finished strategy 回调接收到的已完成策略
 
-            pool.close()
+            pool.close()    # 必须关闭
 
             if self.p.optdatas and self._dopreload and self._dorunonce:
                 for data in self.datas:
                     data.stop()
 
         if not self._dooptimize:
-            # avoid a list of list for regular cases
+            # avoid a list of list for regular cases    # 避免
             return self.runstrats[0]
 
         return self.runstrats
@@ -1240,8 +1254,10 @@ class Cerebro(with_metaclass(MetaParams, object)):
         return next(self.stcount)
 
     def runstrategies(self, iterstrat, predata=False):
+        print("runstrategies")
         '''
         Internal method invoked by ``run``` to run a set of strategies
+        通过run调用的内部方法：执行一组策略
         '''
         self._init_stcount()
 

@@ -130,7 +130,7 @@ class YahooFinanceCSVData(feed.CSVDataBase):
 
     # 实现了父类要求的_loadline方法
     def _loadline(self, linetokens):
-        print("_loadline")
+        print("_loadline 提取数据")
         while True:
             nullseen = False
             for tok in linetokens[1:]:      # 跳过了datetime 字段？

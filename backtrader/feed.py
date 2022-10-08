@@ -705,7 +705,7 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     )
 
     def start(self):
-        print("CSVDataBase类方法start：打开文件")
+        print("CSVDataBase类方法start：打开文件,跳过标题，把指针放到第一行真正的数据上")
         """ 打开文件
         应该是读入文本流 self.f = io.open(abspath, 'r')
         """
@@ -750,7 +750,7 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
         self.f = None
 
     def _load(self):
-        print("CSVDataBase类方法_load")
+        print("CSVDataBase类方法_load，把接力棒交给YahooFinanceCSVDate类的_loadline")
         if self.f is None:  # 如果文件为空 返回False
             return False
 
