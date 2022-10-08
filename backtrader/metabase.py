@@ -69,6 +69,7 @@ __call__()函数 使 类名 可以像函数一样被调用，必须有返回值
     就可以 A() 
 """
 class MetaBase(type):
+    print("MetaBase")
     """
     元基类：backtrader所有类的老祖宗
     由名字猜想元类 MetaBase 是所有元类的基类
@@ -231,6 +232,7 @@ class AutoInfoClass(object):
 
 
 class MetaParams(MetaBase):
+    print("MetaParams")
     """
     参数类的元类
     继承自元类的类也是元类"""

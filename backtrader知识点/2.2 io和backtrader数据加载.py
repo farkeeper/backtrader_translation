@@ -6,9 +6,21 @@
 # 时间：2022/10/5 - 18:20
 # 作者：farserver@163.com
 # ====================================================
+"""
+bt 的数据加载过程
+类 YahooFinanceCSVData 继承自 feed.CSVDataBase
+在feed.CSVDataBase里：
+    打开文件，定义分隔符，跳过第一行的标题（列名），删除末尾的回车符
+在 YahooFinanceCSVData 里实现了_loadline方法：
 
+
+"""
 # python io模块详解
 # https://docs.python.org/zh-cn/3/library/io.html
+import datetime
+import io
+import os
+
 """
 class io.StringIO(initial_value='', newline='\n')
 一个使用内存文本缓冲的文本流。
@@ -25,5 +37,18 @@ class io.StringIO(initial_value='', newline='\n')
 不管写入时是将数据分多次写入，还是作为一个整体一次写入，读取时的效果都是完全一样的。
 """
 
+import backtrader as bt
+
 if __name__ == "__main__":
-    pass
+    modpath = os.path.dirname(__file__)
+    data_path = os.path.join(modpath, '../datas/yhoo-2003-2005.txt')
+
+    cerebro = bt.Cerebro()
+    data = bt.feeds.YahooFinanceCSVData(
+        dataname=data_path,
+        fromdate=datetime.datetime(2021, 10, 1),
+        todate=datetime.datetime(2022, 10, 1)
+    )
+    # cerebro.adddata(data)
+
+    # 调用了类，类方法里面的print语句打印不出来，什么原因？

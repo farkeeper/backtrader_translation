@@ -43,7 +43,7 @@ class MetaOandaData(DataBase.__class__):
 
 class OandaData(with_metaclass(MetaOandaData, DataBase)):
     '''Oanda Data Feed.
-
+    昂达型 数据饲料
     Params:
 
       - ``qcheck`` (default: ``0.5``)

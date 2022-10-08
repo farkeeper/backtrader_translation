@@ -40,6 +40,7 @@ __all__ = ['YahooFinanceCSVData',   # yahoo财经CSV数据类 ，继承自 CSV�
            'YahooFinance',
            ]
 class YahooFinanceCSVData(feed.CSVDataBase):
+    print("YahooFinanceCSVData")
     '''
     Parses pre-downloaded Yahoo CSV Data Feeds (or locally generated if they
     comply to the Yahoo format)
@@ -127,25 +128,29 @@ class YahooFinanceCSVData(feed.CSVDataBase):
         创建一个StingIO对象，寄存在缓冲区，可选参数buf是一个str或unicode类型，它将会与后续写的数据存放一起。
         """
 
+    # 实现了父类要求的_loadline方法
     def _loadline(self, linetokens):
+        print("_loadline")
         while True:
             nullseen = False
-            for tok in linetokens[1:]:
+            for tok in linetokens[1:]:      # 跳过了datetime 字段？
                 if tok == 'null':
                     nullseen = True
-                    linetokens = self._getnextline()  # refetch tokens
+                    linetokens = self._getnextline()  # refetch tokens 重新提取
+                    print('linetokens', linetokens)
                     if not linetokens:
                         return False  # cannot fetch, go away
 
                     # out of for to carry on wiwth while True logic
                     break
 
+            # while循环的出口
             if not nullseen:
                 break  # can proceed
 
-        i = itertools.count(0)
+        i = itertools.count(0)      # 从0开始步长为1的无限迭代器
 
-        dttxt = linetokens[next(i)]
+        dttxt = linetokens[next(i)]     # next(iterator)
         dt = date(int(dttxt[0:4]), int(dttxt[5:7]), int(dttxt[8:10]))
         dtnum = date2num(datetime.combine(dt, self.p.sessionend))
 

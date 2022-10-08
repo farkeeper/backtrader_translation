@@ -799,7 +799,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
     def adddata(self, data, name=None):
         '''
         Adds a ``Data Feed`` instance to the mix.
-        添加一个 数据饲料 实例 到组合中，名字默认为空
+        添加一个数据饲料类的 实例 到组合中，名字默认为空
 
         If ``name`` is not None it will be put into ``data._name`` which is
         meant for decoration/plotting purposes.
@@ -809,7 +809,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
         next（迭代器[，默认值]）
         从迭代器返回下一项。如果给定默认值，并且迭代器已用完，则返回它，而不引发StopIteration。
         '''
-        # 如果名字非空，就赋值给data._name
+        # 给data._name赋值
+        # data是参数
         if name is not None:
             data._name = name
 
@@ -818,7 +819,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
         self.datas.append(data)     # 类实例的datas属性添加data元素
         self.datasbyname[data._name] = data
-        # 由下句可知，data是类
+        # 由下句可知，data是类，也可以是实例
         feed = data.getfeed()
         if feed and feed not in self.feeds:
             self.feeds.append(feed)

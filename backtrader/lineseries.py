@@ -303,6 +303,7 @@ class Lines(object):
 
 
 class MetaLineSeries(LineMultiple.__class__):
+    print("MetaLineSeries")
     '''
     Dirty job manager for a LineSeries
 
@@ -442,6 +443,7 @@ class MetaLineSeries(LineMultiple.__class__):
 
 
 class LineSeries(with_metaclass(MetaLineSeries, LineMultiple)):
+    print("LineSeries")
     plotinfo = dict(
         plot=True,
         plotmaster=None,

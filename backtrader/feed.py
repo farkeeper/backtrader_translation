@@ -49,6 +49,7 @@ __all__ = ['MetaAbstractDataBase',  # 抽象数据基类的元类
 
 
 class MetaAbstractDataBase(dataseries.OHLCDateTime.__class__):
+    print("MetaAbstractDataBase")
     """抽象数据基类的元类
     功能：
     用途：
@@ -137,6 +138,7 @@ class MetaAbstractDataBase(dataseries.OHLCDateTime.__class__):
 
 class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
                                       dataseries.OHLCDateTime)):
+    print("AbstractDataBase")
     """抽象数据基类 """
 
     params = (
@@ -619,6 +621,7 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
 
 
 class DataBase(AbstractDataBase):
+    print("DataBase")
     pass
 
 
@@ -657,6 +660,7 @@ class FeedBase(with_metaclass(metabase.MetaParams, object)):
 
 
 class MetaCSVDataBase(DataBase.__class__):
+    print("MetaCSVDataBase")
     def dopostinit(cls, _obj, *args, **kwargs):
         # Before going to the base class to make sure it overrides the default
         if not _obj.p.name and not _obj._name:
@@ -669,6 +673,7 @@ class MetaCSVDataBase(DataBase.__class__):
 
 
 class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
+    print("CSVDataBase")
     """
     Base class for classes implementing CSV DataFeeds
     （实现）CSV 数据饲料 类 的基类
@@ -687,18 +692,27 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     `_loadline`的返回值将被被重写的`_load`的返回值 通过该基类
     `_load` 返回 通过该基类重写的`_loadline`的返回值
     """
-    # 类变量
+    # 定义了一堆类变量
     # 是类本身自己拥有的变量，类实例化时，会拷贝一份给实例对象。可通过 类名.类变量 调用，也可以 实例对象.类变量 调用
     # 所有不同的实例对象，都有一份类变量，但都是拷贝来的，不同的实例对象修改类变量并不会影响其他实例对象的类变量。
-    # params 应该是定义了一堆类变量
     # 定义了类变量，所有子类都会拷贝一份
     # 只要Cerebro的超类定义了类变量data，Strategy类也继承了同一超类，则Strategy的实例就拥有了类变量data,从而实现data共享
-    f = None
-    params = (('headers', True), ('separator', ','),)   # separator 分隔符
+    # 是不是通过访问内存缓冲区 实现的
+    f = None        # 类变量，下文可以self.f调用，类外可以直接 obj.f 或者 cls.f 调用
+    params = (
+        ('headers', True),
+        ('separator', ','),     # separator 分隔符
+    )
 
     def start(self):
-        super(CSVDataBase, self).start()    # 调用超类的start()函数
+        print("CSVDataBase类方法start：打开文件")
+        """ 打开文件
+        应该是读入文本流 self.f = io.open(abspath, 'r')
+        """
+        # 调用超类的start()函数
+        super(CSVDataBase, self).start()
 
+        # 打开文件
         if self.f is None:  # self.f is None 和 not self.f 不完全一样
             if hasattr(self.p.dataname, 'readline'):
                 self.f = self.p.dataname
@@ -707,18 +721,23 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
                 # 以只读模式打开文件self.p.dataname，返回的数据流赋值给self.f，如果打开失败则抛出IOError
                 self.f = io.open(self.p.dataname, 'r')
 
+        # 跳过了第一行数据
         if self.p.headers:  # 如果存在self.p.headers
-            self.f.readline()  # skip the headers 跳过标题
+            self.f.readline()  # skip the headers 调用一次，指针指向第二行，所以就跳过了标题
 
-        self.separator = self.p.separator   # 定义 分隔符
+        # 定义 分隔符
+        self.separator = self.p.separator
 
     def stop(self):
+        """ 清空self.f """
         super(CSVDataBase, self).stop()
         if self.f is not None:  # 非空
             self.f.close()  # 关闭
             self.f = None   # 清空
 
     def preload(self):
+        print("CSVDataBase类方法 preload")
+        """ 预加载 """
         while self.load():
             pass
 
@@ -731,18 +750,19 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
         self.f = None
 
     def _load(self):
+        print("CSVDataBase类方法_load")
         if self.f is None:  # 如果文件为空 返回False
             return False
 
         # Let an exception propagate to let the caller know
-        # 触发异常
+        # 触发异常时文本流结束
         line = self.f.readline()
-
+        #
         if not line:
             return False
 
-        line = line.rstrip('\n')
-        linetokens = line.split(self.separator)
+        line = line.rstrip('\n')        # 删除末尾的回车符
+        linetokens = line.split(self.separator)     # 以,分割数据 （返回list）
         return self._loadline(linetokens)
 
     def _getnextline(self):

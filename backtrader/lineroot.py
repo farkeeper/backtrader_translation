@@ -41,6 +41,7 @@ from . import metabase
 mro()：类的继承关系
 """
 class MetaLineRoot(metabase.MetaParams):
+    print("MetaLineRoot")
     '''
     Once the object is created (effectively pre-init) the "owner" of this
     class is sought
@@ -64,6 +65,7 @@ class MetaLineRoot(metabase.MetaParams):
 
 
 class LineRoot(with_metaclass(MetaLineRoot, object)):
+    print("LineRoot")
     '''
     Defines a common base and interfaces for Single and Multiple
     LineXXX instances
@@ -316,6 +318,7 @@ class LineRoot(with_metaclass(MetaLineRoot, object)):
 
 
 class LineMultiple(LineRoot):
+    print("LineMultiple")
     '''
     Base class for LineXXX instances that hold more than one line
     '''

@@ -58,6 +58,7 @@ class TimeFrame(object):
 
 
 class DataSeries(LineSeries):
+    print("DataSeries")
     plotinfo = dict(plot=True, plotind=True, plotylimited=True)
 
     _name = ''
@@ -106,11 +107,13 @@ class DataSeries(LineSeries):
 
 
 class OHLC(DataSeries):
+    print("OHLC类 定义了6条线")
     # 类变量
     lines = ('close', 'low', 'high', 'open', 'volume', 'openinterest',)
 
 
 class OHLCDateTime(OHLC):
+    print("OHLCDateTime")
     lines = (('datetime'),)
 
 
