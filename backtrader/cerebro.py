@@ -55,7 +55,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         Whether to preload the different ``data feeds`` passed to cerebro for
         the Strategies
         是否把传递给 cerebro的 ’数据饲料‘ 预加载 给 策略
-        怎么传递的呢？
+        是否为策略预加载‘数据饲料’传递给cerebro
 
       - ``runonce`` (default: ``True``)
         矢量化运行：是
@@ -803,24 +803,26 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
         If ``name`` is not None it will be put into ``data._name`` which is
         meant for decoration/plotting purposes.
-        如果‘name’非空，他将被赋值给‘data._name’，用于绘图。
+        如果‘name’非空，他将被赋值给‘data._name’，装饰在绘图画面上。
 
         # 函数体 ：
         next（迭代器[，默认值]）
         从迭代器返回下一项。如果给定默认值，并且迭代器已用完，则返回它，而不引发StopIteration。
         '''
-        # 给data._name赋值
-        # data是参数
+        # 给‘数据饲料’（类的实例）命名
         if name is not None:
             data._name = name
 
         data._id = next(self._dataid)
         data.setenvironment(self)
 
+        # cerebro的数据表列表里追加一个数据 并能通过名字调用
         self.datas.append(data)     # 类实例的datas属性添加data元素
         self.datasbyname[data._name] = data
-        # 由下句可知，data是类，也可以是实例
-        feed = data.getfeed()
+
+        # 饲料里添加一个饲料？
+        # data是实例，是数据饲料类的实例
+        feed = data.getfeed()   # 把抽象基类里的feed赋值给cerebro的feed
         if feed and feed not in self.feeds:
             self.feeds.append(feed)
 
@@ -1202,10 +1204,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
         if not self.strats:  # Datas are present, add a strategy
             self.addstrategy(Strategy)
 
-        iterstrats = itertools.product(*self.strats)    # 组合式迭代器 策略的
+        iterstrats = itertools.product(*self.strats)    # 组合式迭代器 策略迭代器
         if not self._dooptimize or self.p.maxcpus == 1:
             # If no optimmization is wished ... or 1 core is to be used
             # let's skip process "spawning"
+            # 如果不希望优化 或者 使用单核心计算机，就跳过多进程
             for iterstrat in iterstrats:
                 runstrat = self.runstrategies(iterstrat)
                 self.runstrats.append(runstrat)
