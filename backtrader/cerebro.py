@@ -1237,6 +1237,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 self.runstrats.append(r)
                 for cb in self.optcbs:
                     cb(r)  # callback receives finished strategy 回调接收到的已完成策略
+                    # 回调就是个指针，指针就是地址
 
             pool.close()    # 必须关闭
 

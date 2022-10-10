@@ -47,8 +47,10 @@ class MetaStrategy(StrategyBase.__class__):
     def __init__(cls, name, bases, dct):
         '''
         Class has already been created ... register subclasses
+        类已创建，注册子类
         '''
         # Initialize the class
+        # 初始化类
         super(MetaStrategy, cls).__init__(name, bases, dct)
 
         if not cls.aliased and name != 'Strategy' and not name.startswith('_'):

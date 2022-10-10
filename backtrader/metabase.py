@@ -17,24 +17,25 @@ from .utils.py3 import zip, string_types, with_metaclass
 
 
 def findbases(kls, topclass):
-    """ 查找kls的所有父类 到topclass为止 """
+    """ 查询kls类的继承关系 """
     retval = list()
-    for base in kls.__bases__:
-        if issubclass(base, topclass):      # 如果base是topclass的子类
-            retval.extend(findbases(base, topclass))        # 末尾追加 元素
+    for base in kls.__bases__:      # kls的直接父类（他爸爸），不包括爷爷、祖爷爷等
+        # 如果kls他爸爸是是topclass的子类
+        if issubclass(base, topclass):
+            retval.extend(findbases(base, topclass))  # 末尾追加 元素
             retval.append(base)  # 末尾追加 整体
 
     return retval
-    # kls.__bases__ 返回所有基类
-    # 函数内部如果只 append,每次迭代都将会清空retval，无法获取所有父类
-    # 函数内定义变量 retval ，累加获取元素，此法可取。
-    # 迭代法可以吗？
+    # kls.__bases__ 返回所有直接父类（他爸爸们）
+    # extend 追加元素，append追加整体，如append([1,2,3]), extend追加的是1,2,3而append追加的是[1,2,3]
+    # 函数内定义变量 retval ，累加获取元素，此法可嘉。
+
 
 def findowner(owned, cls, startlevel=2, skip=None):
     """ 查找调用者 """
     # skip this frame and the caller's -> start at 2
     # 跳过本框框和调用者 - 从2级开始
-    # 无限迭代器 从startlevel开始步长为1，从无限迭代器里挨个取出
+    # 无限迭代器 从startlevel开始，步长为1，从无限迭代器里挨个取出
     for framelevel in itertools.count(startlevel):
         try:
             # 查看函数被什么函数调用以及被第几行调用及被调用函数所在文件
@@ -58,6 +59,11 @@ def findowner(owned, cls, startlevel=2, skip=None):
     return None
 
 """
+findbases 和 findowner 用来查找实例的父类和调用者
+在bt里，通过这两个函数就能把父子关系捋出来
+"""
+
+"""
 __call__()函数 使 类名 可以像函数一样被调用，必须有返回值
 类名后面加(),就像个函数一样。
 可见类的返回值从__call__而来
@@ -68,6 +74,8 @@ __call__()函数 使 类名 可以像函数一样被调用，必须有返回值
             
     就可以 A() 
 """
+
+
 class MetaBase(type):
     print("MetaBase")
     """
@@ -112,7 +120,7 @@ class MetaBase(type):
         _obj, args, kwargs = cls.dopreinit(_obj, *args, **kwargs)
         _obj, args, kwargs = cls.doinit(_obj, *args, **kwargs)
         _obj, args, kwargs = cls.dopostinit(_obj, *args, **kwargs)
-        return _obj     # 一切皆对象
+        return _obj  # 一切皆对象
 
     # python 一切皆对象，一切皆指针
     # 面向过程 --> 面向对象 --> 面向Github
@@ -191,7 +199,7 @@ class AutoInfoClass(object):
     def _get(self, name, default=None):
         return getattr(self, name, default)
 
-    @classmethod    # 类方法，类不用实例化，就可以调用该方法，如 AutoInfoClass()._getkwargsdefault(cls)
+    @classmethod  # 类方法，类不用实例化，就可以调用该方法，如 AutoInfoClass()._getkwargsdefault(cls)
     def _getkwargsdefault(cls):
         return cls._getpairs()
 
@@ -232,15 +240,16 @@ class AutoInfoClass(object):
 
 
 class MetaParams(MetaBase):
-    print("MetaParams")
+    print("MetaParams类")
     """
     参数类的元类
     继承自元类的类也是元类"""
+
     def __new__(meta, name, bases, dct):
         # Remove params from class definition to avoid inheritance
         # (and hence "repetition")
         # 从类的定义中删除params以避免被继承或者因此重复
-        newparams = dct.pop('params', ())   # 取出params，如果没有则返回空元组
+        newparams = dct.pop('params', ())  # 取出params，如果没有则返回空元组
 
         packs = 'packages'
         newpackages = tuple(dct.pop(packs, ()))  # remove before creation
@@ -349,6 +358,7 @@ class ItemCollection(object):
       - Index
       - Name (if set in the append operation)
     '''
+
     def __init__(self):
         self._items = list()
         self._names = list()
@@ -374,4 +384,3 @@ class ItemCollection(object):
     def getbyname(self, name):
         idx = self._names.index(name)
         return self._items[idx]
-
