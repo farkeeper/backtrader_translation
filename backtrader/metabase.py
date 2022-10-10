@@ -17,7 +17,10 @@ from .utils.py3 import zip, string_types, with_metaclass
 
 
 def findbases(kls, topclass):
-    """ 查询kls类的继承关系 """
+    """ 查询kls类的继承关系 返回家谱：祖宗、祖爷爷、爷爷、爸爸
+        如果kls有多个爸爸（多继承），爸爸各有爸爸，...，最终有多个祖宗，而函数只查询topclass这一支血脉
+        blood lineage 血缘关系
+    """
     retval = list()
     for base in kls.__bases__:      # kls的直接父类（他爸爸），不包括爷爷、祖爷爷等
         # 如果kls他爸爸是是topclass的子类
@@ -27,30 +30,42 @@ def findbases(kls, topclass):
 
     return retval
     # kls.__bases__ 返回所有直接父类（他爸爸们）
+    # 坑：虽然bases是复数，但只查询爸爸辈（可能有多个），查询不到爷爷辈
     # extend 追加元素，append追加整体，如append([1,2,3]), extend追加的是1,2,3而append追加的是[1,2,3]
     # 函数内定义变量 retval ，累加获取元素，此法可嘉。
 
 
 def findowner(owned, cls, startlevel=2, skip=None):
-    """ 查找调用者 """
+    """ 调用本函数的对象（如果是cls的实例）
+    owned:
+    cls:
+    startlevel:从第几级开始查
+    skip:跳过谁
+    """
     # skip this frame and the caller's -> start at 2
-    # 跳过本框框和调用者 - 从2级开始
-    # 无限迭代器 从startlevel开始，步长为1，从无限迭代器里挨个取出
+    # 跳过本框框和直接调用者 - 从2级开始
+    # 无限迭代器 从startlevel开始，默认步长为1，从无限迭代器里挨个取出
     for framelevel in itertools.count(startlevel):
+        # 查找本函数被谁调用过，跳过第一级（直接调用的函数），第2级、3、4、5....直至抛出异常
         try:
-            # 查看函数被什么函数调用以及被第几行调用及被调用函数所在文件
             frame = sys._getframe(framelevel)
         except ValueError:
-            # Frame depth exceeded ... no owner ... break away
+            # 抛出异常时停止循环
             break
 
+        # 返回frame的 self或者obj （实例或者对象）
         # 'self' in regular code    正常代码中的self
+        # self是 类 这个对象(有地址有名字有父类有属性有行为)，哪个类调用了，self就是谁，self是个指针，是个内存地址
+        # 结合__new__方法理解：new创建一个类（这个类是空的，就是个内存地址，地址里有类名 父类 属性 三个空变量）
+        # 类创建的实例如果是cls的实例
         self_ = frame.f_locals.get('self', None)
-        if skip is not self_:
+        if skip is not self_:   # 如果不跳过这一级
+            # 如果调用本函数的类不是owned并且调用本函数的类是cls的实例
             if self_ is not owned and isinstance(self_, cls):
                 return self_
 
-        # '_obj' in metaclasses
+        # '_obj' in metaclasses ： _obj 是元类里面的
+        # 调用本函数的元类创建的对象如果是cls类的实例
         obj_ = frame.f_locals.get('_obj', None)
         if skip is not obj_:
             if obj_ is not owned and isinstance(obj_, cls):
