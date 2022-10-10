@@ -34,9 +34,10 @@ def findbases(kls, topclass):
     # extend 追加元素，append追加整体，如append([1,2,3]), extend追加的是1,2,3而append追加的是[1,2,3]
     # 函数内定义变量 retval ，累加获取元素，此法可嘉。
 
-
+# type 不考虑继承关系 ， isinstance 考虑继承关系, 如ABCDE5个类，e=E(), e也是A的实例
 def findowner(owned, cls, startlevel=2, skip=None):
-    """ 调用本函数的对象（如果是cls的实例）
+    # 本函数不会被用来处理数据，所以一般会在类和元类中调用，用于查找是哪个类调用的
+    """ 调用本函数的类或元类（如果是cls的实例）# isinstance 考虑继承关系, 如ABCDE5个类，e=E(), e也是A的实例
     owned:
     cls:
     startlevel:从第几级开始查

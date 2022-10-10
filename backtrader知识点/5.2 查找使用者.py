@@ -43,9 +43,6 @@ import sys
 
 if __name__ == "__main__":
 
-
-
-
     def findowner(owned, cls, startlevel=2, skip=None):
         """本函数被谁调用过
         owned:
@@ -60,6 +57,7 @@ if __name__ == "__main__":
             # 查找本函数被谁调用过，跳过第一级（直接调用的函数），第2级、3、4、5....直至抛出异常
             try:
                 frame = sys._getframe(framelevel)
+                print("frame", frame)
             except ValueError:
                 # 抛出异常时停止循环
                 break
@@ -70,14 +68,15 @@ if __name__ == "__main__":
             self_ = frame.f_locals.get('self', None)
             if skip is not self_:  # 如果不跳过这一级
                 # 如果调用者不是owned并且调用者是cls的实例
-                if self_ is not owned and isinstance(self_, cls):
+                if isinstance(self_, cls):
+                    print(self_, "调用啦")
                     return self_
 
             # '_obj' in metaclasses ： _obj 是元类里面的
             # 元类
             obj_ = frame.f_locals.get('_obj', None)
             if skip is not obj_:
-                if obj_ is not owned and isinstance(obj_, cls):
+                if isinstance(obj_, cls):
                     return obj_
 
         return None
@@ -85,6 +84,8 @@ if __name__ == "__main__":
 
     """本元类创建的对象如果是cls的实例 则返回这个对象"""
     """本类"""
+
+
     class A:
         def __init__(self):
             self.name = 'A'
@@ -94,32 +95,30 @@ if __name__ == "__main__":
     x = a
     y = x
 
+
     class B(A):
         def __init__(self):
             self.name = a
-            x = a
-            y = x
-            print(findowner(a, A))
-
+            x = findowner(a, A)
 
 
     b = B()
-    x = a
-    y = x
+
+
     class C(B):
         def __init__(self):
             self.name = b
-            print(findowner(b, A))
+            x = findowner(b, B)
 
-    
+
     c = C()
-    c = B()
-    class D(C, A):
+
+
+    class D(C):
         def __init__(self):
-            self.name = c
-            x = a
-            y = x
-            print(findowner(c, B))
+            self.name = 5
+            b = B()
+            c = C()
+
 
     d = D()
-    print(findowner(d, A))
