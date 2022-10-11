@@ -62,7 +62,7 @@ if __name__ == "__main__":
                 # 抛出异常时停止循环
                 break
 
-            # 'self' in regular code    正常代码中的self
+            # 'self' in regular code    代码中的self
             # self是 类 这个对象(有地址有名字有父类有属性有行为)，哪个类调用了，self就是谁，self是个指针，是个内存地址
             # 结合__new__方法理解：new创建一个类（这个类是空的，就是个内存地址，地址里有类名 父类 属性 三个空变量）
             self_ = frame.f_locals.get('self', None)
@@ -72,8 +72,7 @@ if __name__ == "__main__":
                     print(self_, "调用啦")
                     return self_
 
-            # '_obj' in metaclasses ： _obj 是元类里面的
-            # 元类
+            # '_obj' in metaclasses ： 元类里面的obj
             obj_ = frame.f_locals.get('_obj', None)
             if skip is not obj_:
                 if isinstance(obj_, cls):

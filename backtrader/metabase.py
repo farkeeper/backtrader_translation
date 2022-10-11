@@ -65,7 +65,7 @@ def findowner(owned, cls, startlevel=2, skip=None):
             if self_ is not owned and isinstance(self_, cls):
                 return self_
 
-        # '_obj' in metaclasses ： _obj 是元类里面的
+        # '_obj' in metaclasses ： 元类里面的 _obj
         # 调用本函数的元类创建的对象如果是cls类的实例
         obj_ = frame.f_locals.get('_obj', None)
         if skip is not obj_:
@@ -146,9 +146,16 @@ class MetaBase(type):
 
 
 class AutoInfoClass(object):
-    _getpairsbase = classmethod(lambda cls: OrderedDict())
-    _getpairs = classmethod(lambda cls: OrderedDict())
+    _getpairsbase = classmethod(lambda cls: OrderedDict())  # lambda 参数:表达式，返回一个函数对象（函数的地址）
+    _getpairs = classmethod(lambda cls: OrderedDict())  # OrderedDict 有序字典
     _getrecurse = classmethod(lambda cls: False)
+    # _getpairsbase用于提取所有bases(父类)中的相关属性
+    # _getpairs用于提取父类和当前类定义中的所有相关属性
+    # @classmethod 类方法装饰器，可 通过类名直接调用
+    # 以上代码等价于：
+    # @classmethod
+    # def _getpairsbase(cls):
+    #       return OrderedDict()
 
     @classmethod
     def _derive(cls, name, info, otherbases, recurse=False):
@@ -276,6 +283,7 @@ class MetaParams(MetaBase):
         # Create the new class - this pulls predefined "params"
         # 创建新类 - 提取预定义的‘params’
         cls = super(MetaParams, meta).__new__(meta, name, bases, dct)
+        # python3可以直接用super().__new__(cls, bases, attr)
 
         # Pulls the param class out of it - default is the empty class
         # 提取 param 类 - 默认是空类
@@ -368,12 +376,12 @@ class ParamsBase(with_metaclass(MetaParams, object)):
 
 
 class ItemCollection(object):
-    '''
+    """
+    封装了 一个可以通过 index和name 访问具体项 的 数据结构对象
     Holds a collection of items that can be reached by
-    保存一个可以通过 index和name 访问具体项 的 集合
       - Index
       - Name (if set in the append operation)
-    '''
+    """
 
     def __init__(self):
         self._items = list()
@@ -400,3 +408,5 @@ class ItemCollection(object):
     def getbyname(self, name):
         idx = self._names.index(name)
         return self._items[idx]
+
+    # list.index(x) 返回对象x的索引

@@ -21,7 +21,7 @@ class SubCerebro(Cerebro):
 
 if __name__ == "__main__":
     cerebro = Cerebro()
-    print(cerebro.__dir__())
+    print("所有的类属性和行为", cerebro.__dir__())
 
     sub = SubCerebro()
     print(sub.params)
