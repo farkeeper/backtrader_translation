@@ -38,10 +38,18 @@ from .timer import Timer
 # 在这里定义以期他可以被拾取，理想状态下他将在Cerebro内部被定义
 # 翻译的不对
 class OptReturn(object):
-    def __init__(self, params, **kwargs):   # 位置参数 关键字参数
+    def __init__(self, params, **kwargs):  # 位置参数 关键字参数
         self.p = self.params = params
-        for k, v in kwargs.items():     # 遍历字典 关键字参数以字典类型传递
-            setattr(self, k, v)     # 为self设置属性值（属性可以是新增）
+        for k, v in kwargs.items():  # 遍历字典 关键字参数以字典类型传递
+            setattr(self, k, v)  # 为self设置属性值（属性可以是新增）
+
+
+"""
+    赛萝卜运行机制：
+        加载系统变量
+        实例化策略
+        执行策略
+"""
 
 
 class Cerebro(with_metaclass(MetaParams, object)):
@@ -295,19 +303,19 @@ class Cerebro(with_metaclass(MetaParams, object)):
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),  # 矢量化运行 ： 是
         ('maxcpus', None),  # 最大核心数 ：默认 所有核心一块干
-        ('stdstats', True),     # 标准模式：是
+        ('stdstats', True),  # 标准模式：是
         ('oldbuysell', False),
         ('oldtrades', False),
         ('lookahead', 0),
         ('exactbars', False),
-        ('optdatas', True),     # 优化数据
-        ('optreturn', True),    # 优化返回结果
+        ('optdatas', True),  # 优化数据
+        ('optreturn', True),  # 优化返回结果
         ('objcache', False),
-        ('live', False),    # 实时模式：否
+        ('live', False),  # 实时模式：否
         ('writer', False),
         ('tradehistory', False),
         ('oldsync', False),
-        ('tz', None),   # 时区 默认使用世界统一时间
+        ('tz', None),  # 时区 默认使用世界统一时间
         ('cheat_on_open', False),
         ('broker_coo', True),
         ('quicknotify', False),
@@ -319,26 +327,26 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self._doreplay = False
         self._dooptimize = False
         self.stores = list()
-        self.feeds = list()     # 饲料
-        self.datas = list()     # 数据
+        self.feeds = list()  # 饲料
+        self.datas = list()  # 数据
         self.datasbyname = collections.OrderedDict()
-        self.strats = list()    # 策略
+        self.strats = list()  # 策略
         self.optcbs = list()  # holds a list of callbacks for opt strategies 保存 策略的回调列表
-        self.observers = list()     # 观察者
-        self.analyzers = list()     # 分析员
-        self.indicators = list()    # 指标
+        self.observers = list()  # 观察者
+        self.analyzers = list()  # 分析员
+        self.indicators = list()  # 指标
         self.sizers = dict()
         self.writers = list()
         self.storecbs = list()
         self.datacbs = list()
-        self.signals = list()       # 信号
+        self.signals = list()  # 信号
         self._signal_strat = (None, None, None)
         self._signal_concurrent = False
         self._signal_accumulate = False
 
         self._dataid = itertools.count(1)
 
-        self._broker = BackBroker()     # 私有成员 经纪人
+        self._broker = BackBroker()  # 私有成员 经纪人
         self._broker.cerebro = self
 
         self._tradingcal = None  # TradingCalendar()
@@ -347,22 +355,23 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self._ohistory = list()
         self._fhistory = None
 
-    @staticmethod   # 静态方法 不用实例化就能使用 类名.函数名() 调用 和@classmethod差不多 https://blog.csdn.net/EMIvv/article/details/122482756
+    @staticmethod  # 静态方法 不用实例化就能使用 类名.函数名() 调用 和@classmethod差不多 https://blog.csdn.net/EMIvv/article/details/122482756
     def iterize(iterable):
         '''Handy function which turns things into things that can be iterated upon
         including iterables
         灵活函数，把东西转换为可迭代的，包括iterables
         '''
-        niterable = list()      # 定义一个数组
+        niterable = list()  # 定义一个数组
         for elem in iterable:
             if isinstance(elem, string_types):  # 如果 elem 是 字符串类型 （的实例）
-                elem = (elem,)      # 转换成元组
-            elif not isinstance(elem, collections.Iterable):    # 如果不是 类型
-                elem = (elem,)      # 也转换成元组
+                elem = (elem,)  # 转换成元组
+            elif not isinstance(elem, collections.Iterable):  # 如果不是 类型
+                elem = (elem,)  # 也转换成元组
 
-            niterable.append(elem)      # 末尾追加 元素
+            niterable.append(elem)  # 末尾追加 元素
 
         return niterable
+
     # 只要不是 collections.Iterable 类型 就转换成 元组
 
     def set_fund_history(self, fund):
@@ -650,8 +659,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''Adds an ``Store`` instance to the if not already present
         添加一个 目前还不存在的 ‘Store’实例
         '''
-        if store not in self.stores:    # 如果stores里没有store
-            self.stores.append(store)   # stores追加store（整体） extend是（打碎）追加元素
+        if store not in self.stores:  # 如果stores里没有store
+            self.stores.append(store)  # stores追加store（整体） extend是（打碎）追加元素
 
     def addwriter(self, wrtcls, *args, **kwargs):
         '''Adds an ``Writer`` class to the mix. Instantiation will be done at
@@ -817,12 +826,12 @@ class Cerebro(with_metaclass(MetaParams, object)):
         data.setenvironment(self)
 
         # cerebro的数据表列表里追加一个数据 并能通过名字调用
-        self.datas.append(data)     # 类实例的datas属性添加data元素
+        self.datas.append(data)  # 类实例的datas属性添加data元素
         self.datasbyname[data._name] = data
 
         # 饲料里添加一个饲料？
         # data是实例，是数据饲料类的实例
-        feed = data.getfeed()   # 把抽象基类里的feed赋值给cerebro的feed
+        feed = data.getfeed()  # 把抽象基类里的feed赋值给cerebro的feed
         if feed and feed not in self.feeds:
             self.feeds.append(feed)
 
@@ -1135,9 +1144,9 @@ class Cerebro(with_metaclass(MetaParams, object)):
         linebuffer.LineActions.usecache(self.p.objcache)
         indicator.Indicator.usecache(self.p.objcache)
 
-        self._dorunonce = self.p.runonce    # 矢量化
-        self._dopreload = self.p.preload    # 预加载
-        self._exactbars = int(self.p.exactbars)     # 正在执行的当前bar
+        self._dorunonce = self.p.runonce  # 矢量化
+        self._dopreload = self.p.preload  # 预加载
+        self._exactbars = int(self.p.exactbars)  # 正在执行的当前bar
 
         if self._exactbars:
             self._dorunonce = False  # something is saving memory, no runonce
@@ -1204,7 +1213,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         if not self.strats:  # Datas are present, add a strategy
             self.addstrategy(Strategy)
 
-        iterstrats = itertools.product(*self.strats)    # 组合式迭代器 策略迭代器
+        iterstrats = itertools.product(*self.strats)  # 组合式迭代器 策略迭代器
         if not self._dooptimize or self.p.maxcpus == 1:
             # If no optimmization is wished ... or 1 core is to be used
             # let's skip process "spawning"
@@ -1225,21 +1234,21 @@ class Cerebro(with_metaclass(MetaParams, object)):
                         data.extend(size=self.params.lookahead)
 
                     # print("data._start()在这里准备调用CSVDataBase类方法_start()")
-                    data._start()   # 在这里调用了CSVDataBase类方法_start()
+                    data._start()  # 在这里调用了CSVDataBase类方法_start()
                     if self._dopreload:
                         data.preload()
 
             # 多进程 干嘛这是
             # pool.imap()一旦生成就会开始，返回迭代器格式，缓存在内存里
             print("多进程 干嘛这是")
-            pool = multiprocessing.Pool(self.p.maxcpus or None)     # maxcpus进程数
+            pool = multiprocessing.Pool(self.p.maxcpus or None)  # maxcpus进程数
             for r in pool.imap(self, iterstrats):
                 self.runstrats.append(r)
                 for cb in self.optcbs:
                     cb(r)  # callback receives finished strategy 回调接收到的已完成策略
                     # 回调就是个指针，指针就是地址
 
-            pool.close()    # 必须关闭
+            pool.close()  # 必须关闭
 
             if self.p.optdatas and self._dopreload and self._dorunonce:
                 for data in self.datas:
@@ -1261,9 +1270,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
         print("runstrategies")
         '''
         Internal method invoked by ``run``` to run a set of strategies
-        通过run调用的内部方法：执行一组策略
+        通过run()调用的内部方法：执行策略
         '''
         self._init_stcount()
+
+        # store feed broker启动start方法，broker设置相关history
 
         self.runningstrats = runstrats = list()
         for store in self.stores:
@@ -1298,6 +1309,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
         # self._plotfillers = [list() for d in self.datas]
         # self._plotfillers2 = [list() for d in self.datas]
 
+        # data视情况进行重置 重启 预加载数据
+
         if not predata:
             for data in self.datas:
                 data.reset()
@@ -1307,6 +1320,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 if self._dopreload:
                     data.preload()
 
+        # 将datas作为参数实例化策略 并设置相关属性 包括tz qbuffer
         for stratcls, sargs, skwargs in iterstrat:
             sargs = self.datas + list(sargs)
             try:
@@ -1325,6 +1339,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
             tz = self.datas[tz]._tz
         else:
             tz = tzparse(tz)
+
+        # 给策略添加其他角色 observer indicator analyzer sizer writer
 
         if runstrats:
             # loop separated for clarity
@@ -1357,8 +1373,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
                     strat._addsizer(sizer, *sargs, **skwargs)
 
                 strat._settz(tz)
+
+                # 策略启动
                 strat._start()
 
+                # 如果写入csv，日志器写入策略表头
                 for writer in self.runwriters:
                     if writer.p.csv:
                         writer.addheaders(strat.getwriterheaders())
@@ -1367,9 +1386,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 for strat in runstrats:
                     strat.qbuffer(self._exactbars, replaying=self._doreplay)
 
+            # 启动日志器
             for writer in self.runwriters:
                 writer.start()
 
+            # 用data[0]启动timer并添加至相关的cerebro._timers
             # Prepare timers
             self._timers = []
             self._timerscheat = []
@@ -1382,6 +1403,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 else:
                     self._timers.append(timer)
 
+            # 进一步进入策略逻辑 _runnext(runstrats)
             if self._dopreload and self._dorunonce:
                 if self.p.oldsync:
                     self._runonce_old(runstrats)
@@ -1410,6 +1432,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
         self.stop_writers(runstrats)
 
+        # 如果是优化模型 封装参数信息及analyzer信息并返回
         if self._dooptimize and self.p.optreturn:
             # Results can be optimized
             results = list()
@@ -1805,6 +1828,3 @@ class Cerebro(with_metaclass(MetaParams, object)):
             if t.params.strats:
                 for strat in runstrats:
                     strat.notify_timer(t, t.lastwhen, *t.args, **t.kwargs)
-
-
-
