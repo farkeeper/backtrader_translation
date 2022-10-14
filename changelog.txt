@@ -394,7 +394,7 @@
     not produced a value yet
   - New DrawDown Analyzer and refactoring of DrawDown observer
   - Closes #235 by updating PivotPoint Family to make plotting work under new
-    sync scheme and automate self-coupling
+    sync scheme and automate cls-coupling
   - Some usual documentation updates / typo corrections
   - Minor corrections/improvements
   - Address #243 by sorting (timeframe, compression) data feeds internally to

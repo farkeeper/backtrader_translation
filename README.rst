@@ -44,10 +44,10 @@ different ways. Use the docs (and examples) Luke!
   import backtrader as bt
 
   class SmaCross(bt.SignalStrategy):
-      def __init__(self):
+      def __init__(cls):
           sma1, sma2 = bt.ind.SMA(period=10), bt.ind.SMA(period=30)
           crossover = bt.ind.CrossOver(sma1, sma2)
-          self.signal_add(bt.SIGNAL_LONG, crossover)
+          cls.signal_add(bt.SIGNAL_LONG, crossover)
 
   cerebro = bt.Cerebro()
   cerebro.addstrategy(SmaCross)
@@ -126,7 +126,7 @@ Python 2/3 Support
 Installation
 ============
 
-``backtrader`` is self-contained with no external dependencies (except if you
+``backtrader`` is cls-contained with no external dependencies (except if you
 want to plot)
 
 From *pypi*:

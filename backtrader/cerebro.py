@@ -1130,7 +1130,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         if not self.datas:
             return []  # nothing can be run
 
-        # 设置参数属性值
+        # 第一步 设置参数属性值
         pkeys = self.params._getkeys()
         for key, val in kwargs.items():
             if key in pkeys:
@@ -1212,7 +1212,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         # 添加策略
         if not self.strats:  # Datas are present, add a strategy
             self.addstrategy(Strategy)
-
+        # 第二步 调用 实例化策略 函数
         iterstrats = itertools.product(*self.strats)  # 组合式迭代器 策略迭代器
         if not self._dooptimize or self.p.maxcpus == 1:
             # If no optimmization is wished ... or 1 core is to be used

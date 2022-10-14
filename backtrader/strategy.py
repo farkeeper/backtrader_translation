@@ -30,7 +30,10 @@ from .utils import OrderedDict, AutoOrderedDict, AutoDictList
 
 
 class MetaStrategy(StrategyBase.__class__):
-    """ 策略类的元类 基类是StrategyBase.__class__"""
+    """ 策略类的元类 基类是StrategyBase.__class__
+    type函数用于判断对象的类型，__class__类方法具备相同功能
+    type会追溯到顶层类，bases仅能追溯到爸爸类（直接父类）
+    """
     _indcol = dict()
 
     def __new__(meta, name, bases, dct):
