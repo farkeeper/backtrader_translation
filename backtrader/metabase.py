@@ -23,7 +23,7 @@ def findbases(kls, topclass):
     """
     retval = list()
     for base in kls.__bases__:      # kls的直接父类（他爸爸），不包括爷爷、祖爷爷等
-        # 如果kls他爸爸是是topclass的子类
+        # 如果kls他爸爸是是topclass的子类 就一只往上辈查
         if issubclass(base, topclass):
             retval.extend(findbases(base, topclass))  # 末尾追加 元素
             retval.append(base)  # 末尾追加 整体
@@ -105,8 +105,12 @@ class MetaBase(type):
         不同的类有好多好多的实体。 张三家的那只老母狗、李四、这棵野菊花、去年春天和美女一起开过房的那幢酒店
     """
 
+    # 类的实例化会首先运行()内的代码，元类有call函数，才可以调用。
+    # 创建类对象时，会自动调用 元类的 __call__ 函数，返回一个元类的实例对象（类）
+
     # 接下来的5个 类行为（函数） 都是给 call函数 准备的
-    # 类是由 该类（或者父类）设定的 元类 负责创建的：metaclass=元类名，会自动调用 元类的 __call__ 函数
+    # 类是由 该类（或者父类）设定的 元类 负责创建的：
+
     # 类是由 元类的 __call__ 函数，控制创建过程 的
 
     def doprenew(cls, *args, **kwargs):
@@ -128,6 +132,7 @@ class MetaBase(type):
 
     def __call__(cls, *args, **kwargs):
         """call函数使 类 可调用，如 类名()
+        （）可以看出 调用运算
         谁调用谁就是cls，谁(metaclass=MetaBase)， 谁就是cls
         """
         print("看谁调用了bt的老祖宗元基类MetaBase", __file__)
@@ -222,7 +227,7 @@ class AutoInfoClass(object):
     def _get(self, name, default=None):
         return getattr(self, name, default)
 
-    @classmethod  # 类方法，类不用实例化，就可以调用该方法，如 AutoInfoClass()._getkwargsdefault(cls)
+    @classmethod  # 类方法，类不用实例化，就可以调用该方法，如 AutoInfoClass._getkwargsdefault(cls)
     def _getkwargsdefault(cls):
         return cls._getpairs()
 
@@ -252,13 +257,14 @@ class AutoInfoClass(object):
         return [getattr(self, x) for x in self._getkeys()]
 
     def __new__(cls, *args, **kwargs):
+        # 调用父类的new函数，创建一个空对象（内存地址）
         obj = super(AutoInfoClass, cls).__new__(cls, *args, **kwargs)
 
         if cls._getrecurse():
             for infoname in obj._getkeys():
                 recursecls = getattr(cls, infoname)
                 setattr(obj, infoname, recursecls())
-
+        # 返回这个对象 赋值给__init__的self
         return obj
 
 
