@@ -22,17 +22,16 @@ def findbases(kls, topclass):
         blood lineage 血缘关系 genealogy 家谱
     """
     retval = list()
-    for base in kls.__bases__:  # kls的直接父类（他爸爸），不包括爷爷、祖爷爷等
+    for base in kls.__bases__:
         # 如果kls他爸爸是是topclass的子类 就一只往上辈查
         if issubclass(base, topclass):
             retval.extend(findbases(base, topclass))  # 末尾追加 元素
             retval.append(base)  # 末尾追加 整体
 
     return retval
-    # kls.__bases__ 返回所有直接父类（他爸爸们），不包括爷爷、祖爷爷等
+    # kls.__bases__ 返回所有直接父类（如果是多继承就有好几个爸爸），不包括爷爷、祖爷爷等
     # 坑：虽然bases是复数，但只查询爸爸辈（可能有多个），查询不到爷爷辈
-    # extend 追加元素，append追加整体，如append([1,2,3]), extend追加的是1,2,3而append追加的是[1,2,3]
-    # 函数内定义变量 retval ，累加获取元素，此法可嘉。
+    # extend 追加元素，append追加整体，如追加[1,2,3], extend追加的是1,2,3而append追加的是[1,2,3]
     # 递归可以使用在任何地方，不仅在return处。
 
     # type 不考虑继承关系 ， isinstance 考虑继承关系, 如ABCDE依次继承的5个类，e=E(), e也是A的实例
