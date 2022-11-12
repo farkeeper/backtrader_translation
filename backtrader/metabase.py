@@ -40,11 +40,11 @@ def findbases(kls, topclass):
 
 def findowner(owned, cls, startlevel=2, skip=None):
     """ 查找宿主：谁调用了本函数
+    调用本函数的类或者元类 的实例 如果也是cls的实例，则返回实例地址
     owned:
     cls:
     startlevel:从第几级开始查
     skip:跳过谁
-    # 本函数不会被用来处理数据，所以一般会在类和元类中调用，用于查找是哪个类调用的
     """
     # skip this frame and the caller's -> start at 2
     # 跳过本级框架和直接调用者 - 从2级开始
@@ -52,18 +52,15 @@ def findowner(owned, cls, startlevel=2, skip=None):
     for framelevel in itertools.count(startlevel):
         # 查找本函数被谁调用过，跳过第一级（直接调用的函数），第2级、3、4、5....直至抛出异常
         try:
-            frame = sys._getframe(framelevel)       # 返回当前函数的调用句柄，
+            frame = sys._getframe(framelevel)       # 返回当前函数的调用者信息，
             # 哪个地址的哪个文件的第几行代码调用过当前函数 代码框架名是什么（函数名 类名）
         except ValueError:
             # 抛出异常时 停止 循环
             break
 
-        # 返回frame的 self或者obj （实例或者对象）
         # 'self' in regular code    正常代码中的self
-        # self是 类 这个对象(有地址有名字有父类有属性有行为)，哪个类调用了，self就是谁，self是个指针，是个内存地址
-        # 结合__new__方法理解：new创建一个类（这个类是空的，就是个内存地址，地址里有类名 父类 属性 三个空变量）
-        # 类创建的实例如果是cls的实例
         # f_locals 返回对象的所有属性，这里是获得调用者的self属性，类实例
+        # 调用本函数的类的实例如果是cls的实例，则返回类实例
         self_ = frame.f_locals.get('self', None)
         if skip is not self_:  # 如果不跳过这一级
             # 如果调用者不是owned 并且调用者是cls的实例，则返回 类实例
@@ -71,7 +68,7 @@ def findowner(owned, cls, startlevel=2, skip=None):
                 return self_
 
         # '_obj' in metaclasses ： 元类里面的 _obj
-        # 调用本函数的元类创建的对象如果是cls类的实例
+        # 调用本函数的元类创建的对象如果是cls类的实例，则返回类实例
         # 获取调用者的_obj属性
         obj_ = frame.f_locals.get('_obj', None)
         if skip is not obj_:
