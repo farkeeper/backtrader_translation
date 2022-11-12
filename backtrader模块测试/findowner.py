@@ -3,24 +3,25 @@
 # ====================================================
 # 名称：
 # 简介：
-# 时间：2022/10/7 - 9:34
+# 时间：2022/11/12 - 23:41
 # 作者：farserver@163.com
 # ====================================================
 import itertools
 import sys
 
-def fun(startlevel):
-    for framelevel in itertools.count(startlevel):
+
+def findowner(startlevel=0, skip=None):
+    for framlevel in itertools.count(startlevel):
         try:
-            # 查看函数被什么函数调用以及被第几行调用及被调用函数所在文件
-            frame = sys._getframe(framelevel)
-            print(frame)
-        except ValueError:
-            # Frame depth exceeded ... no owner ... break away
+            frame = sys._getframe(framlevel)
+        except:
             break
+        print(frame)
+
+
+def fun(a):
+    findowner()
+
 
 if __name__ == "__main__":
-    fun(100)
-
-    print(sys._getframe().f_locals.get('__name__') == '__main__')
-
+    fun(1)

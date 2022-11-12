@@ -13,6 +13,7 @@ import backtrader as bt
 if __name__ == "__main__":
     modpath = os.path.dirname(__file__)
     datapath = os.path.join(modpath, "../datas/600848.his")
+    print(datapath)
     data = bt.feeds.YahooFinanceCSVData(dataname=datapath,
                                         fromdate='2020-02-02',
                                         todate='2021-02-02',

@@ -8,8 +8,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from collections import OrderedDict
-import itertools
+from collections import OrderedDict  # 有序字典：一般用于动态插入操作并有序输出的场景
+import itertools  # 高效迭代库
 import sys
 
 import backtrader as bt
@@ -17,41 +17,45 @@ from .utils.py3 import zip, string_types, with_metaclass
 
 
 def findbases(kls, topclass):
-    """ 查询kls类的继承关系 返回家谱：祖宗、祖爷爷、爷爷、爸爸
-        如果kls有多个爸爸（多继承），爸爸各有爸爸，...，最终有多个祖宗，而函数只查询topclass这一支血脉
-        blood lineage 血缘关系
+    """ 查询kls类到topclass之间的继承关系 返回家谱：祖宗、祖爷爷、爷爷、爸爸
+        如果kls有多个爸爸（多继承），爸爸各有爸爸，...，最终有多个祖宗，而函数只查询老祖宗topclass这一支血脉
+        blood lineage 血缘关系 genealogy 家谱
     """
     retval = list()
-    for base in kls.__bases__:      # kls的直接父类（他爸爸），不包括爷爷、祖爷爷等
+    for base in kls.__bases__:  # kls的直接父类（他爸爸），不包括爷爷、祖爷爷等
         # 如果kls他爸爸是是topclass的子类 就一只往上辈查
         if issubclass(base, topclass):
             retval.extend(findbases(base, topclass))  # 末尾追加 元素
             retval.append(base)  # 末尾追加 整体
 
     return retval
-    # kls.__bases__ 返回所有直接父类（他爸爸们）
+    # kls.__bases__ 返回所有直接父类（他爸爸们），不包括爷爷、祖爷爷等
     # 坑：虽然bases是复数，但只查询爸爸辈（可能有多个），查询不到爷爷辈
     # extend 追加元素，append追加整体，如append([1,2,3]), extend追加的是1,2,3而append追加的是[1,2,3]
     # 函数内定义变量 retval ，累加获取元素，此法可嘉。
+    # 递归可以使用在任何地方，不仅在return处。
 
-# type 不考虑继承关系 ， isinstance 考虑继承关系, 如ABCDE5个类，e=E(), e也是A的实例
+    # type 不考虑继承关系 ， isinstance 考虑继承关系, 如ABCDE依次继承的5个类，e=E(), e也是A的实例
+
+
 def findowner(owned, cls, startlevel=2, skip=None):
-    # 本函数不会被用来处理数据，所以一般会在类和元类中调用，用于查找是哪个类调用的
-    """ 调用本函数的类或元类（如果是cls的实例）# isinstance 考虑继承关系, 如ABCDE5个类，e=E(), e也是A的实例
+    """ 查找宿主：谁调用了本函数
     owned:
     cls:
     startlevel:从第几级开始查
     skip:跳过谁
+    # 本函数不会被用来处理数据，所以一般会在类和元类中调用，用于查找是哪个类调用的
     """
     # skip this frame and the caller's -> start at 2
-    # 跳过本框框和直接调用者 - 从2级开始
+    # 跳过本级框架和直接调用者 - 从2级开始
     # 无限迭代器 从startlevel开始，默认步长为1，从无限迭代器里挨个取出
     for framelevel in itertools.count(startlevel):
         # 查找本函数被谁调用过，跳过第一级（直接调用的函数），第2级、3、4、5....直至抛出异常
         try:
-            frame = sys._getframe(framelevel)
+            frame = sys._getframe(framelevel)       # 返回当前函数的调用句柄，
+            # 哪个地址的哪个文件的第几行代码调用过当前函数 代码框架名是什么（函数名 类名）
         except ValueError:
-            # 抛出异常时停止循环
+            # 抛出异常时 停止 循环
             break
 
         # 返回frame的 self或者obj （实例或者对象）
@@ -59,36 +63,30 @@ def findowner(owned, cls, startlevel=2, skip=None):
         # self是 类 这个对象(有地址有名字有父类有属性有行为)，哪个类调用了，self就是谁，self是个指针，是个内存地址
         # 结合__new__方法理解：new创建一个类（这个类是空的，就是个内存地址，地址里有类名 父类 属性 三个空变量）
         # 类创建的实例如果是cls的实例
+        # f_locals 返回对象的所有属性，这里是获得调用者的self属性，类实例
         self_ = frame.f_locals.get('self', None)
-        if skip is not self_:   # 如果不跳过这一级
-            # 如果调用本函数的类不是owned并且调用本函数的类是cls的实例
+        if skip is not self_:  # 如果不跳过这一级
+            # 如果调用者不是owned 并且调用者是cls的实例，则返回 类实例
             if self_ is not owned and isinstance(self_, cls):
                 return self_
 
         # '_obj' in metaclasses ： 元类里面的 _obj
         # 调用本函数的元类创建的对象如果是cls类的实例
+        # 获取调用者的_obj属性
         obj_ = frame.f_locals.get('_obj', None)
         if skip is not obj_:
             if obj_ is not owned and isinstance(obj_, cls):
                 return obj_
-
+    # 否则 返回None
     return None
+
 
 """
 findbases 和 findowner 用来查找实例的父类和调用者
 在bt里，通过这两个函数就能把父子关系捋出来
-"""
 
-"""
-__call__()函数 使 类名 可以像函数一样被调用，必须有返回值
+__call__函数 使 类名 可以像函数一样被调用，必须有返回值
 类名后面加(),就像个函数一样。
-可见类的返回值从__call__而来
-如:
-    class A:
-        def __call__():
-            pass
-            
-    就可以 A() 
 """
 
 
@@ -154,6 +152,7 @@ class AutoInfoClass(object):
     _getpairsbase = classmethod(lambda cls: OrderedDict())  # lambda 参数:表达式，返回一个函数对象（函数的地址）
     _getpairs = classmethod(lambda cls: OrderedDict())  # OrderedDict 有序字典
     _getrecurse = classmethod(lambda cls: False)
+
     # _getpairsbase用于提取所有bases(父类)中的相关属性
     # _getpairs用于提取父类和当前类定义中的所有相关属性
     # @classmethod 类方法装饰器，可 通过类名直接调用
