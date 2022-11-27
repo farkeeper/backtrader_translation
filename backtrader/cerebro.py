@@ -298,7 +298,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
     '''
     # params是在哪里定义的？metabase模块的 MetaParams(MetaBase)：参数类的元类
-    # 其实就是个类变量。长得难看点
+    # 定义类变量：
     params = (
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),  # 矢量化运行 ： 是
@@ -321,8 +321,10 @@ class Cerebro(with_metaclass(MetaParams, object)):
         ('quicknotify', False),
     )
 
+    # 构造函数
     def __init__(self):
         """初始化函数 类的实例化（实体，具体的对象）时会给对象（实体）赋初始值 """
+        # 以下是实例属性
         self._dolive = False
         self._doreplay = False
         self._dooptimize = False

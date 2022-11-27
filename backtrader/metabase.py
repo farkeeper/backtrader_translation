@@ -58,7 +58,7 @@ def findowner(owned, cls, startlevel=2, skip=None):
             break
 
         # 'self' in regular code    正常代码中的self
-        # f_locals 返回对象的所有属性，这里是获得调用者的self属性，类实例
+        # f_locals 获取对象的所有属性，这里是获得调用者的self属性，类实例
         # 调用本函数的类的实例如果是cls的实例，则返回类实例
         self_ = frame.f_locals.get('self', None)
         if skip is not self_:  # 如果不跳过这一级
