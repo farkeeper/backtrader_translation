@@ -6,15 +6,13 @@
 #
 ###############################################################################
 """
-
-.. module:: linebuffer
 linebuffer模块
 
 Classes that hold the buffer for a *line* and can operate on it
 with appends, forwarding, rewinding, resetting and other
-line和增删改查操作 具备缓存功能的 类
+将line保存在缓冲区的一些类
+和对line进行增删改查等操作
 
-.. moduleauthor:: Daniel Rodriguez
 
 """
 from __future__ import (absolute_import, division, print_function,

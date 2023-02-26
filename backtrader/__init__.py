@@ -10,6 +10,10 @@
 """
     把有用的模块导入到 __init__模块里
     以后用 backtrader.模块名 就能调用该模块了
+    知识点：导包和导模块
+
+    from . import 模块名
+    from .模块名 import * 二者有区别吗？
 """
 
 from __future__ import (absolute_import, division, print_function,

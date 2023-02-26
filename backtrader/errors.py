@@ -19,7 +19,7 @@ class BacktraderError(Exception):
 class StrategySkipError(BacktraderError):
     """Requests the platform to skip this strategy for backtesting. To be
     raised during the initialization (``__init__``) phase of the instance
-    请求平台跳过此策略
+    请求平台跳过此策略继续回测
     在实例的初始化阶段抛出异常
     """
     pass
@@ -30,8 +30,9 @@ class ModuleImportError(BacktraderError):
     be imported
     模块导入异常 类
     如果一个类需要一个模块才能工作但是这个模块却不能导入 则抛出 模块导入异常
-    """
 
+    module 模块， model 模型
+    """
     def __init__(self, message, *args):
         super(ModuleImportError, self).__init__(message)
         self.args = args
@@ -47,9 +48,9 @@ class FromModuleImportError(ModuleImportError):
 
 
 if __name__ == "__main__":
-    module_import_error = ModuleImportError("模块导入异常啊哥们", 12345, 67890)
+    module_import_error = ModuleImportError("模块导入异常啊哥们", 1, 9)
     print("为什么不打印message，却能打印可变参数args呢？", module_import_error)
-
+    #
     """
     位置参数、可变参数、关键字参数
     """

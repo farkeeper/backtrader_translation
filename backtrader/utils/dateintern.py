@@ -149,6 +149,7 @@ MUSECONDS_PER_DAY = MUSECONDS_PER_SECOND * SECONDS_PER_DAY
 def num2date(x, tz=None, naive=True):
     # Same as matplotlib except if tz is None a naive datetime object
     # will be returned.
+    # 与matplotlib一致除非tz为空将返回一个朴素的datetime对象
     """
     *x* is a float value which gives the number of days
     (fraction part represents hours, minutes, seconds) since
