@@ -35,15 +35,15 @@ from .timer import Timer
 
 
 # Defined here to make it pickable. Ideally it could be defined inside Cerebro
-# 在这里定义以期他可以被拾取，理想状态下他将在Cerebro内部被定义
-# 翻译的不对
+# 在这里定义以期他可以被拾取，理想状态下他可以在Cerebro内部定义
+
 class OptReturn(object):
     def __init__(self, params, **kwargs):  # 位置参数 关键字参数
         self.p = self.params = params
-        for k, v in kwargs.items():  # 遍历字典 关键字参数以字典类型传递
-            setattr(self, k, v)  # 为self设置属性值（属性可以是新增）
+        for k, v in kwargs.items():  # 遍历字典键值对 关键字参数以字典类型传递
+            setattr(self, k, v)  # 为类实例设置属性值（属性可以是新增）
 
-
+# object是所有类的基类、超类，一切皆对象。
 """
     赛萝卜运行机制：
         加载系统变量
@@ -57,21 +57,19 @@ class Cerebro(with_metaclass(MetaParams, object)):
     赛萝卜：backtrader的大脑、发动机、回测引擎
     Params:
     参数：
-
       - ``preload`` (default: ``True``)
-        预加载：默认为 是
+        预加载：默认值 是
         Whether to preload the different ``data feeds`` passed to cerebro for
         the Strategies
         是否把传递给 cerebro的 ’数据饲料‘ 预加载 给 策略
-        是否为策略预加载‘数据饲料’传递给cerebro
+        是否为策略预加载‘数据源’传递给cerebro
 
       - ``runonce`` (default: ``True``)
         矢量化运行：是
-
         Run ``Indicators`` in vectorized mode to speed up the entire system.
         Strategies and Observers will always be run on an event based basis
-        以矢量化模式运行’Indicators'指标库以加速整个系统。
-        策略和观察者将一直基于标准运行
+        以向量化模式运行’Indicators'指标库以加速整个系统。
+        策略和观察者将一直基于事件运行
 
       - ``live`` (default: ``False``)
         实时模式：否
@@ -298,7 +296,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
     '''
     # params是在哪里定义的？metabase模块的 MetaParams(MetaBase)：参数类的元类
-    # 定义类变量：
+    # 定义类成员：
     params = (
         ('preload', True),  # 是否把 数据饲料 预加载给 策略 ：是
         ('runonce', True),  # 矢量化运行 ： 是
@@ -323,7 +321,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
     # 构造函数
     def __init__(self):
-        """初始化函数 类的实例化（实体，具体的对象）时会给对象（实体）赋初始值 """
+        """初始化函数 类实例初始化（实体，具体的对象）时会给对象（实体）赋初始值 """
         # 以下是实例属性
         self._dolive = False
         self._doreplay = False
