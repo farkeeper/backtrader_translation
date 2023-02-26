@@ -17,23 +17,24 @@ from .metabase import MetaParams
 
 class CommInfoBase(with_metaclass(MetaParams)):
     '''Base Class for the Commission Schemes.
-
+    佣金模式的基类
     Params:
 
       - ``commission`` (def: ``0.0``): base commission value in percentage or
         monetary units
-
+        以百分比或者货币单位表示的 基础佣金值
       - ``mult`` (def ``1.0``): multiplier applied to the asset for
         value/profit
-
+        作用于 资产价值/利润 的乘数
       - ``margin`` (def: ``None``): amount of monetary units needed to
         open/hold an operation. It only applies if the final ``_stocklike``
         attribute in the class is set to ``False``
-
+        业务所须的货币金额。
+        仅当 类的_stocklike属性被设置为False时适用
       - ``automargin`` (def: ``False``): Used by the method ``get_margin``
         to automatically calculate the margin/guarantees needed with the
         following policy
-
+        由方法get_margin适用，用来自动计算以下策略所需的保证金
           - Use param ``margin`` if param ``automargin`` evaluates to ``False``
 
           - Use param ``mult`` * ``price`` if ``automargin < 0``

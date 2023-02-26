@@ -30,9 +30,9 @@ from .utils.py3 import range
 
 class TradeHistory(AutoOrderedDict):
     '''Represents the status and update event for each update a Trade has
-
+        表示交易每次更新的状态和更新事件
     This object is a dictionary which allows '.' notation
-
+    此对象是允许.符号的字典
     Attributes:
       - ``status`` (``dict`` with '.' notation): Holds the resulting status of
         an update event and has the following sub-attributes
@@ -94,7 +94,7 @@ class TradeHistory(AutoOrderedDict):
 class Trade(object):
     '''Keeps track of the life of an trade: size, price,
     commission (and value?)
-
+    记录交易的整个周期：规模、价格、佣金（金额）
     An trade starts at 0 can be increased and reduced and can
     be considered closed if it goes back to 0.
 

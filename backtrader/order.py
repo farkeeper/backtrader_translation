@@ -2,20 +2,6 @@
 # -*- coding: utf-8; py-indent-offset:4 -*-
 ###############################################################################
 #
-# Copyright (C) 2015-2020 Daniel Rodriguez
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
 from __future__ import (absolute_import, division, print_function,
@@ -37,9 +23,11 @@ class OrderExecutionBit(object):
     Intended to hold information about order execution. A "bit" does not
     determine if the order has been fully/partially executed, it just holds
     information.
+    用于保存订单执行情况。
+    bit不能决定订单全部执行还是部分执行，他只负责保存信息。
 
     Member Attributes:
-
+    属性成员
       - dt: datetime (float) execution time
       - size: how much was executed
       - price: execution price
@@ -88,12 +76,12 @@ class OrderExecutionBit(object):
 class OrderData(object):
     '''
     Holds actual order data for Creation and Execution.
-
+    保存创建和执行的实际订单数据。
     In the case of Creation the request made and in the case of Execution the
     actual outcome.
-
+    在需求已创建和实际结果已执行的情况下。
     Member Attributes:
-
+    属性成员
       - exbits : iterable of OrderExecutionBits for this OrderData
 
       - dt: datetime (float) creation/execution time

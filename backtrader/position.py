@@ -24,12 +24,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from copy import copy
 
-
+# position 仓位
 class Position(object):
     '''
     Keeps and updates the size and price of a position. The object has no
     relationship to any asset. It only keeps size and price.
-
+    记录和更新仓位的规模和价格。本对象与资产毫无联系，他只记录规模和价格
     Member Attributes:
       - size (int): current size of the position
       - price (float): current price of the position
