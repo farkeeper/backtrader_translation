@@ -1,8 +1,11 @@
 # 生成器其实是一个函数
-# 这个函数体必须包含yield关键字,这个函数返回一个生成器对象generator
+# 这个函数体必须又yield关键字,用yield替代return的功能；执行完yield就暂停
+# yield可以解释为：产出、产生并返回然后记住返回的值以备再次使用
+# 这个函数返回一个生成器对象generator
 # 类似这样：
 def myGenerator0():
     yield
+
 # 官方解释是：边循环边计算，所以函数体内还得有循环
 def myGenerator1():
     i = 0
